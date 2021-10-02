@@ -24,7 +24,7 @@ class _ContentOrderState extends State<ContentOrder> {
   bool _loading = false;
   List<Customer> _customerFull = [];
   List<Customer> _customer = [];
-  DateTime date = DateTime.now();
+  DateTime date = DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day-1);
   TextEditingController _searchController = new TextEditingController();
   TextEditingController _customerController = new TextEditingController();
   TextEditingController _alamatController = new TextEditingController();
@@ -151,8 +151,13 @@ class _ContentOrderState extends State<ContentOrder> {
                           onTap: () async {
                             final time = await showTimePicker(
                                 context: context,
-                                initialTime:
-                                    TimeOfDay.fromDateTime(DateTime.now()));
+                                builder: (BuildContext context, Widget child) {
+                                  return MediaQuery(
+                                    data: MediaQuery.of(context).copyWith(alwaysUse24HourFormat: true),
+                                    child: child,
+                                  );
+                                },
+                                initialTime: TimeOfDay.fromDateTime(DateTime.now()));
                             if (time != null) {
                               String dateNow = Global.getCurrentDate(
                                   format: Global.DATETIME_DATABASE_DATE);
