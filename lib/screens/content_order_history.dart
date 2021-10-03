@@ -232,51 +232,43 @@ class _ContentOrderHistoryState extends State<ContentOrderHistory> {
                                 ),
                               ),
                               child: IconButton(
-                                  icon: Icon(Icons.print,
-                                      color: Colors.white, size: 20),
+                                  icon: Icon(Icons.print, color: Colors.white, size: 20),
                                   onPressed: () async {
                                     List<Order> order = [];
                                     Dialogs.showPrintCategory(
                                         context: context,
                                         action: (result) async {
                                           Dialogs.hideDialog(context: context);
-                                          int error = 0;
-                                          for (int i = 0;
-                                              i < _order.length;
-                                              i++) {
+                                          for (int i = 0; i < _order.length; i++) {
                                             if (_order[i].active == "1") {
-                                              if (result == -1 || result == 0) {
-                                                if (_order[i].statusConfirm ==
-                                                    "0") {
-                                                  final response = API.fromJson(
-                                                      await Order.print(
-                                                          context: context,
-                                                          code: _order[i].id));
-                                                  if (!response.success) {
-                                                    error++;
-                                                  }
-                                                }
-                                              }
-
                                               if (result == 0) {
-                                                if (_order[i].statusConfirm ==
-                                                    "0") order.add(_order[i]);
-                                              } else if (result == 2) {
-                                                if (_order[i].statusConfirm ==
-                                                    "2") order.add(_order[i]);
-                                              } else if (result == 3) {
-                                                if (_order[i].statusConfirm ==
-                                                    "2") order.add(_order[i]);
-                                              } else
-                                                order.add(_order[i]);
+                                                if (_order[i].statusConfirm =="0") order.add(_order[i]);
+                                              } 
+                                              else if (result == 2) {
+                                                if (_order[i].statusConfirm =="2") order.add(_order[i]);
+                                              } 
+                                              else if (result == 3) {
+                                                if (_order[i].statusConfirm =="2") order.add(_order[i]);
+                                              } 
+                                              else order.add(_order[i]);
                                             }
                                           }
 
-                                          if (error == 0) {
-                                            Printing()
-                                                .printReseller(context, order);
+                                          bool printSuccess = await Printing().printReseller(context, order);
+
+                                          if(printSuccess){
+                                            for (int i = 0; i < _order.length; i++) {
+                                              if (_order[i].active == "1") {
+                                                if (result == -1 || result == 0) {
+                                                  if (_order[i].statusConfirm == "0") {
+                                                    final response = API.fromJson(await Order.print(context: context, code: _order[i].id));
+                                                  }
+                                                }
+                                              }
+                                            }
                                             select();
                                           }
+                                          else Dialogs.showSimpleText(context: context, text: "Print Gagal");
                                         });
                                   }),
                             ),
@@ -609,7 +601,6 @@ class _ContentOrderHistoryState extends State<ContentOrderHistory> {
               }));
     } 
     else {
-      print("TEST");
       if (_order.statusConfirm == "2") {
         Global.materialNavigate(context, ContentOrderSend(order: _order))
             .then((value) {
