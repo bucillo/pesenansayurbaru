@@ -67,440 +67,441 @@ class _ContentOrderHistoryState extends State<ContentOrderHistory> {
         ],
       ),
       body: SafeArea(
-          child: Container(
-              child: Column(
+          child: Column(
+            children: [
+              Row(
                 children: [
-                  Row(
-                    children: [
-                      Expanded(
-                        child: GestureDetector(
-                          onTap: () {
-                            Global.selectDate(context,
-                                    initialDate: dateStart,
-                                    firstDate: DateTime(DateTime.now().year - 1))
-                                .then((dateNew) {
-                              if (dateNew != null) {
-                                dateStart = dateNew;
-                                select();
-                              }
-                            });
-                          },
-                          child: Container(
-                            padding: EdgeInsets.symmetric(
-                              vertical: 10,
-                            ),
-                            margin: EdgeInsets.only(left: 10, right: 5),
-                            decoration: BoxDecoration(
-                              color: Constants.darkAccent,
-                              borderRadius: BorderRadius.horizontal(
-                                left: Radius.circular(10),
-                                right: Radius.circular(10),
-                              ),
-                            ),
-                            child: Center(
-                              child: Text(
-                                Global.formatDate(
-                                    date: dateStart.toString(),
-                                    inputPattern: Global.DATETIME_DATABASE,
-                                    outputPattern: Global.DATETIME_SHOW_DATE),
-                                style: TextStyle(
-                                    fontSize: 12,
-                                    fontWeight: FontWeight.w500,
-                                    color: Colors.white),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                      Expanded(
-                        child: GestureDetector(
-                          onTap: () {
-                            Global.selectDate(context,
-                                    initialDate: dateEnd, firstDate: dateStart)
-                                .then((dateNew) {
-                              if (dateNew != null) {
-                                dateEnd = dateNew;
-                                select();
-                              }
-                            });
-                          },
-                          child: Container(
-                            padding: EdgeInsets.symmetric(
-                              vertical: 10,
-                            ),
-                            margin: EdgeInsets.only(right: 10, left: 5),
-                            decoration: BoxDecoration(
-                              color: Constants.darkAccent,
-                              borderRadius: BorderRadius.horizontal(
-                                left: Radius.circular(10),
-                                right: Radius.circular(10),
-                              ),
-                            ),
-                            child: Center(
-                              child: Text(
-                                Global.formatDate(
-                                    date: dateEnd.toString(),
-                                    inputPattern: Global.DATETIME_DATABASE,
-                                    outputPattern: Global.DATETIME_SHOW_DATE),
-                                style: TextStyle(
-                                    fontSize: 12,
-                                    fontWeight: FontWeight.w500,
-                                    color: Colors.white),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                  SizedBox(height: 20),
-                  Container(
-                    margin: const EdgeInsets.symmetric(horizontal: 10),
-                    child: Card(
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10.0),
-                      ),
+                  Expanded(
+                    child: GestureDetector(
+                      onTap: () {
+                        Global.selectDate(context,
+                                initialDate: dateStart,
+                                firstDate: DateTime(DateTime.now().year - 1))
+                            .then((dateNew) {
+                          if (dateNew != null) {
+                            dateStart = dateNew;
+                            select();
+                          }
+                        });
+                      },
                       child: Container(
-                        padding: const EdgeInsets.all(12),
-                        child: Column(
-                          children: [
-                            Row(
-                              children: [
-                                Text("Total Transaksi",
-                                    style: TextStyle(fontWeight: FontWeight.bold)),
-                                Expanded(
-                                    child: Align(
-                                        alignment: Alignment.centerRight,
-                                        child: Text(
-                                            Global.delimeter(
-                                                number: totalTransaction.toString()),
-                                            style: TextStyle(
-                                                fontWeight: FontWeight.bold)))),
-                              ],
-                            ),
-                          ],
+                        padding: EdgeInsets.symmetric(
+                          vertical: 10,
+                        ),
+                        margin: EdgeInsets.only(left: 10, right: 5),
+                        decoration: BoxDecoration(
+                          color: Constants.darkAccent,
+                          borderRadius: BorderRadius.horizontal(
+                            left: Radius.circular(10),
+                            right: Radius.circular(10),
+                          ),
+                        ),
+                        child: Center(
+                          child: Text(
+                            Global.formatDate(
+                                date: dateStart.toString(),
+                                inputPattern: Global.DATETIME_DATABASE,
+                                outputPattern: Global.DATETIME_SHOW_DATE),
+                            style: TextStyle(
+                                fontSize: 12,
+                                fontWeight: FontWeight.w500,
+                                color: Colors.white),
+                          ),
                         ),
                       ),
                     ),
                   ),
-                  SizedBox(height: 20),
-                  Container(
-                    margin: const EdgeInsets.symmetric(horizontal: 10),
-                    child: Row(
+                  Expanded(
+                    child: GestureDetector(
+                      onTap: () {
+                        Global.selectDate(context,
+                                initialDate: dateEnd, firstDate: dateStart)
+                            .then((dateNew) {
+                          if (dateNew != null) {
+                            dateEnd = dateNew;
+                            select();
+                          }
+                        });
+                      },
+                      child: Container(
+                        padding: EdgeInsets.symmetric(
+                          vertical: 10,
+                        ),
+                        margin: EdgeInsets.only(right: 10, left: 5),
+                        decoration: BoxDecoration(
+                          color: Constants.darkAccent,
+                          borderRadius: BorderRadius.horizontal(
+                            left: Radius.circular(10),
+                            right: Radius.circular(10),
+                          ),
+                        ),
+                        child: Center(
+                          child: Text(
+                            Global.formatDate(
+                                date: dateEnd.toString(),
+                                inputPattern: Global.DATETIME_DATABASE,
+                                outputPattern: Global.DATETIME_SHOW_DATE),
+                            style: TextStyle(
+                                fontSize: 12,
+                                fontWeight: FontWeight.w500,
+                                color: Colors.white),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              SizedBox(height: 20),
+              Container(
+                margin: const EdgeInsets.symmetric(horizontal: 10),
+                child: Card(
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10.0),
+                  ),
+                  child: Container(
+                    padding: const EdgeInsets.all(12),
+                    child: Column(
                       children: [
-                        Align(
-                            alignment: Alignment.center,
-                            child: Text("Aktifitas",
-                                style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.black26))),
-                        if (Global.getShared(key: Prefs.PREFS_USER_TYPE) == "3") ...[
-                          Expanded(
-                            child: Align(
-                              alignment: Alignment.centerRight,
-                              child: Container(
-                                margin: EdgeInsets.only(left: 10),
-                                decoration: BoxDecoration(
-                                  color: Constants.darkAccent,
-                                  borderRadius: BorderRadius.horizontal(
-                                    left: Radius.circular(15),
-                                    right: Radius.circular(15),
-                                  ),
-                                ),
-                                child: IconButton(
-                                    icon: Icon(Icons.add,
-                                        color: Colors.white, size: 20),
-                                    onPressed: () {
-                                      Global.materialNavigate(context,
-                                              ContentOrder(datetime: dateEnd))
-                                          .then((value) => select());
-                                    }),
-                              ),
-                            ),
-                          )
-                        ] else ...[
-                          if (_order.length > 0) ...[
+                        Row(
+                          children: [
+                            Text("Total Transaksi",
+                                style: TextStyle(fontWeight: FontWeight.bold)),
                             Expanded(
-                              child: Align(
-                                alignment: Alignment.centerRight,
-                                child: Container(
-                                  margin: EdgeInsets.only(left: 10),
-                                  decoration: BoxDecoration(
-                                    color: Constants.darkAccent,
-                                    borderRadius: BorderRadius.horizontal(
-                                      left: Radius.circular(15),
-                                      right: Radius.circular(15),
-                                    ),
-                                  ),
-                                  child: IconButton(
-                                      icon: Icon(Icons.print,
-                                          color: Colors.white, size: 20),
-                                      onPressed: () async {
-                                        List<Order> order = [];
-                                        Dialogs.showPrintCategory(
-                                            context: context,
-                                            action: (result) async {
-                                              Dialogs.hideDialog(context: context);
-                                              int error = 0;
-                                              for (int i = 0;
-                                                  i < _order.length;
-                                                  i++) {
-                                                if (_order[i].active == "1") {
-                                                  if (result == -1 || result == 0) {
-                                                    if (_order[i].statusConfirm ==
-                                                        "0") {
-                                                      final response = API.fromJson(
-                                                          await Order.print(
-                                                              context: context,
-                                                              code: _order[i].id));
-                                                      if (!response.success) {
-                                                        error++;
-                                                      }
-                                                    }
-                                                  }
-
-                                                  if (result == 0) {
-                                                    if (_order[i].statusConfirm ==
-                                                        "0") order.add(_order[i]);
-                                                  } else if (result == 2) {
-                                                    if (_order[i].statusConfirm ==
-                                                        "2") order.add(_order[i]);
-                                                  } else if (result == 3) {
-                                                    if (_order[i].statusConfirm ==
-                                                        "2") order.add(_order[i]);
-                                                  } else
-                                                    order.add(_order[i]);
-                                                }
-                                              }
-
-                                              if (error == 0) {
-                                                Printing()
-                                                    .printReseller(context, order);
-                                                select();
-                                              }
-                                            });
-                                      }),
-                                ),
-                              ),
-                            )
-                          ]
-                        ]
+                                child: Align(
+                                    alignment: Alignment.centerRight,
+                                    child: Text(
+                                        Global.delimeter(
+                                            number: totalTransaction.toString()),
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.bold)))),
+                          ],
+                        ),
                       ],
                     ),
                   ),
-                  if (_order.length > 0) ...[
-                    Center(
-                      child: ListView.builder(
-                        // physics: NeverScrollableScrollPhysics(),
-                        shrinkWrap: true,
-                        itemCount: _order.length,
-                        itemBuilder: (context, index) {
-                          String detail = "";
-                          if (_order[index].active == "1") {
-                            if (_order[index].statusConfirm == "0")
-                              detail = "\n[BELUM KONFIRMASI]\n";
-                            else if (_order[index].statusConfirm == "1")
-                              detail = "\n[SUDAH KONFIRMASI]\n";
-                            else if (_order[index].statusConfirm == "2")
-                              detail = "\n[ON PROSES]\n";
-                            else if (_order[index].statusConfirm == "3")
-                              detail = "\n[ON SEND]\n";
-                            else if (_order[index].statusConfirm == "4")
-                              detail = "\n[SUDAH KONFIRMASI]\n";
-                          }
-
-                          detail += "\nCustomer: " + _order[index].customerName;
-                          detail += "\nAlamat: " + _order[index].customerAddress;
-                          detail += "\nTelp: " + _order[index].customerPhone;
-                          detail += "\n\nPesanan:\n" + _order[index].description;
-
-                          return Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 5),
-                            child: Card(
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(10.0),
-                              ),
-                              child: ListTile(
-                                onTap: () {
-                                  if (Global.getShared(key: Prefs.PREFS_USER_TYPE) ==
-                                      "3") {
-                                    if (_order[index].statusConfirm == "0" &&
-                                        _order[index].active == "1")
-                                      _dialogAction(_order[index]);
-                                  } 
-                                  else {
-                                    if (_order[index].statusConfirm != "0" &&
-                                        _order[index].active == "1")
-                                      _dialogAction(_order[index]);
-                                  }
-                                },
-                                title: Row(
-                                  children: [
-                                    Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: [
-                                        if (_order[index].active == "0") ...[
-                                          Text(
-                                            "[BATAL]",
-                                            style: TextStyle(
-                                                fontWeight: FontWeight.bold,
-                                                color: Colors.red),
-                                          ),
-                                          Text(
-                                            _order[index].code,
-                                            style: TextStyle(
-                                                fontWeight: FontWeight.bold,
-                                                color: Colors.red),
-                                          ),
-                                        ] else ...[
-                                          Text(
-                                            _order[index].code,
-                                            style: TextStyle(
-                                                fontWeight: FontWeight.bold),
-                                          ),
-                                        ]
-                                      ],
-                                    )
-                                  ],
-                                ),
-                                subtitle: Row(
-                                  children: [
-                                    Expanded(child: Text(detail)),
-                                    Column(
-                                     children: [
-                                       if (_order[index].imageSent != "") ...[
-                                          GestureDetector(
-                                            onTap: () {
-                                              showDialog(
-                                                  context: context,
-                                                  builder: (context) {
-                                                    return Dialog(
-                                                      child: Padding(
-                                                        padding: const EdgeInsets.all(12),
-                                                        child: Column(
-                                                          mainAxisSize: MainAxisSize.min,
-                                                          children: [
-                                                            GestureDetector(
-                                                              onTap: (){
-                                                                Global.materialNavigate(context, ContentImageUrl(url: "https://gatewaybucil2.my.id/order/" + _order[index].imageSent)).then((value) {
-                                                                  // Dialogs.hideDialog(context: context);
-                                                                });
-                                                              },
-                                                              child: Container(
-                                                                width: 200,
-                                                                height: 200,
-                                                                child: CachedNetworkImage(
-                                                                  imageUrl:
-                                                                      "https://gatewaybucil2.my.id/order/" + _order[index].imageSent,
-                                                                  placeholder: (context,
-                                                                          url) =>
-                                                                      new CircularProgressIndicator(),
-                                                                  errorWidget: (context,
-                                                                          url, error) =>
-                                                                      new Icon(Icons.error),
-                                                                ),
-                                                              ),
-                                                            ),
-                                                            SizedBox(height: 10),
-                                                            GestureDetector(
-                                                              onTap: (){
-                                                                Global.materialNavigate(context, ContentImageUrl(url: "https://gatewaybucil2.my.id/order/" + _order[index].imageReceipt)).then((value) {
-                                                                  // Dialogs.hideDialog(context: context);
-                                                                });
-                                                              },
-                                                              child: Container(
-                                                                width: 200,
-                                                                height: 200,
-                                                                child: CachedNetworkImage(
-                                                                  imageUrl:
-                                                                      "https://gatewaybucil2.my.id/order/" +
-                                                                          _order[index]
-                                                                              .imageReceipt,
-                                                                  placeholder: (context,
-                                                                          url) =>
-                                                                      new CircularProgressIndicator(),
-                                                                  errorWidget: (context,
-                                                                          url, error) =>
-                                                                      new Icon(Icons.error),
-                                                                ),
-                                                              ),
-                                                            ),
-                                                          ],
-                                                        ),
-                                                      ),
-                                                    );
-                                                  });
-                                            },
-                                            child: Text("GAMBAR",
-                                                style: TextStyle(color: Colors.blue)),
-                                          )
-                                        ],
-                                        if (_order[index].image != "") ...[
-                                          SizedBox(height: 20),
-                                          GestureDetector(
-                                            onTap: () {
-                                              showDialog(
-                                                  context: context,
-                                                  builder: (context) {
-                                                    return Dialog(
-                                                      child: Padding(
-                                                        padding: const EdgeInsets.all(12),
-                                                        child: Column(
-                                                          mainAxisSize: MainAxisSize.min,
-                                                          children: [
-                                                            GestureDetector(
-                                                              onTap: (){
-                                                                Global.materialNavigate(context, ContentImageUrl(url: "https://gatewaybucil2.my.id/order/" + _order[index].imageSent)).then((value) {
-                                                                  // Dialogs.hideDialog(context: context);
-                                                                });
-                                                              },
-                                                              child: Container(
-                                                                width: 200,
-                                                                height: 200,
-                                                                child: CachedNetworkImage(
-                                                                  imageUrl:
-                                                                      "https://gatewaybucil2.my.id/order/" + _order[index].image,
-                                                                  placeholder: (context,
-                                                                          url) =>
-                                                                      new CircularProgressIndicator(),
-                                                                  errorWidget: (context,
-                                                                          url, error) =>
-                                                                      new Icon(Icons.error),
-                                                                ),
-                                                              ),
-                                                            ),
-                                                          ],
-                                                        ),
-                                                      ),
-                                                    );
-                                                  });
-                                            },
-                                            child: Text("GAMBAR 2",
-                                                style: TextStyle(color: Colors.blue)),
-                                          )
-                                        ],
-                                     ], 
-                                    )
-                                  ],
-                                ),
+                ),
+              ),
+              SizedBox(height: 20),
+              Container(
+                margin: const EdgeInsets.symmetric(horizontal: 10),
+                child: Row(
+                  children: [
+                    Align(
+                        alignment: Alignment.center,
+                        child: Text("Aktifitas",
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                color: Colors.black26))),
+                    if (Global.getShared(key: Prefs.PREFS_USER_TYPE) == "3") ...[
+                      Expanded(
+                        child: Align(
+                          alignment: Alignment.centerRight,
+                          child: Container(
+                            margin: EdgeInsets.only(left: 10),
+                            decoration: BoxDecoration(
+                              color: Constants.darkAccent,
+                              borderRadius: BorderRadius.horizontal(
+                                left: Radius.circular(15),
+                                right: Radius.circular(15),
                               ),
                             ),
-                          );
-                        },
-                      ),
-                    ),
-                  ] else ...[
-                    SizedBox(height: 80),
-                    Image.asset(
-                      'assets/file-storage.png',
-                      width: 100.0,
-                      fit: BoxFit.cover,
-                    ),
-                    SizedBox(height: 10),
-                    Text("Tidak ada data")
-                  ]
-                ],
-              ))),
+                            child: IconButton(
+                                icon: Icon(Icons.add,
+                                    color: Colors.white, size: 20),
+                                onPressed: () {
+                                  Global.materialNavigate(context,
+                                          ContentOrder(datetime: dateEnd))
+                                      .then((value) => select());
+                                }),
+                          ),
+                        ),
+                      )
+                    ] else ...[
+                      if (_order.length > 0) ...[
+                        Expanded(
+                          child: Align(
+                            alignment: Alignment.centerRight,
+                            child: Container(
+                              margin: EdgeInsets.only(left: 10),
+                              decoration: BoxDecoration(
+                                color: Constants.darkAccent,
+                                borderRadius: BorderRadius.horizontal(
+                                  left: Radius.circular(15),
+                                  right: Radius.circular(15),
+                                ),
+                              ),
+                              child: IconButton(
+                                  icon: Icon(Icons.print,
+                                      color: Colors.white, size: 20),
+                                  onPressed: () async {
+                                    List<Order> order = [];
+                                    Dialogs.showPrintCategory(
+                                        context: context,
+                                        action: (result) async {
+                                          Dialogs.hideDialog(context: context);
+                                          int error = 0;
+                                          for (int i = 0;
+                                              i < _order.length;
+                                              i++) {
+                                            if (_order[i].active == "1") {
+                                              if (result == -1 || result == 0) {
+                                                if (_order[i].statusConfirm ==
+                                                    "0") {
+                                                  final response = API.fromJson(
+                                                      await Order.print(
+                                                          context: context,
+                                                          code: _order[i].id));
+                                                  if (!response.success) {
+                                                    error++;
+                                                  }
+                                                }
+                                              }
+
+                                              if (result == 0) {
+                                                if (_order[i].statusConfirm ==
+                                                    "0") order.add(_order[i]);
+                                              } else if (result == 2) {
+                                                if (_order[i].statusConfirm ==
+                                                    "2") order.add(_order[i]);
+                                              } else if (result == 3) {
+                                                if (_order[i].statusConfirm ==
+                                                    "2") order.add(_order[i]);
+                                              } else
+                                                order.add(_order[i]);
+                                            }
+                                          }
+
+                                          if (error == 0) {
+                                            Printing()
+                                                .printReseller(context, order);
+                                            select();
+                                          }
+                                        });
+                                  }),
+                            ),
+                          ),
+                        )
+                      ]
+                    ]
+                  ],
+                ),
+              ),
+              if (_order.length > 0) ...[
+                Expanded(
+                  child: ListView.builder(
+                    // physics: NeverScrollableScrollPhysics(),
+                    physics: AlwaysScrollableScrollPhysics(),
+                    shrinkWrap: true,
+                    itemCount: _order.length,
+                    itemBuilder: (context, index) {
+                      String detail = "";
+                      if (_order[index].active == "1") {
+                        if (_order[index].statusConfirm == "0")
+                          detail = "\n[BELUM KONFIRMASI]\n";
+                        else if (_order[index].statusConfirm == "1")
+                          detail = "\n[SUDAH KONFIRMASI]\n";
+                        else if (_order[index].statusConfirm == "2")
+                          detail = "\n[ON PROSES]\n";
+                        else if (_order[index].statusConfirm == "3")
+                          detail = "\n[ON SEND]\n";
+                        else if (_order[index].statusConfirm == "4")
+                          detail = "\n[SUDAH KONFIRMASI]\n";
+                      }
+
+                      detail += "\nTanggal: " + Global.formatDate(date: _order[index].date, outputPattern: Global.DATETIME_SHOW) ;
+                      detail += "\nCustomer: " + _order[index].customerName;
+                      detail += "\nAlamat: " + _order[index].customerAddress;
+                      detail += "\nTelp: " + _order[index].customerPhone;
+                      detail += "\n\nPesanan:\n" + _order[index].description;
+
+                      return Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 5),
+                        child: Card(
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10.0),
+                          ),
+                          child: ListTile(
+                            onTap: () {
+                              if (Global.getShared(key: Prefs.PREFS_USER_TYPE) ==
+                                  "3") {
+                                if (_order[index].statusConfirm == "0" &&
+                                    _order[index].active == "1")
+                                  _dialogAction(_order[index]);
+                              } 
+                              else {
+                                if (_order[index].statusConfirm != "0" &&
+                                    _order[index].active == "1")
+                                  _dialogAction(_order[index]);
+                              }
+                            },
+                            title: Row(
+                              children: [
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    if (_order[index].active == "0") ...[
+                                      Text(
+                                        "[BATAL]",
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                            color: Colors.red),
+                                      ),
+                                      Text(
+                                        _order[index].code,
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                            color: Colors.red),
+                                      ),
+                                    ] else ...[
+                                      Text(
+                                        _order[index].code,
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.bold),
+                                      ),
+                                    ]
+                                  ],
+                                )
+                              ],
+                            ),
+                            subtitle: Row(
+                              children: [
+                                Expanded(child: Text(detail)),
+                                Column(
+                                 children: [
+                                   if (_order[index].imageSent != "") ...[
+                                      GestureDetector(
+                                        onTap: () {
+                                          showDialog(
+                                              context: context,
+                                              builder: (context) {
+                                                return Dialog(
+                                                  child: Padding(
+                                                    padding: const EdgeInsets.all(12),
+                                                    child: Column(
+                                                      mainAxisSize: MainAxisSize.min,
+                                                      children: [
+                                                        GestureDetector(
+                                                          onTap: (){
+                                                            Global.materialNavigate(context, ContentImageUrl(url: "https://gatewaybucil2.my.id/order/" + _order[index].imageSent)).then((value) {
+                                                              // Dialogs.hideDialog(context: context);
+                                                            });
+                                                          },
+                                                          child: Container(
+                                                            width: 200,
+                                                            height: 200,
+                                                            child: CachedNetworkImage(
+                                                              imageUrl:
+                                                                  "https://gatewaybucil2.my.id/order/" + _order[index].imageSent,
+                                                              placeholder: (context,
+                                                                      url) =>
+                                                                  new CircularProgressIndicator(),
+                                                              errorWidget: (context,
+                                                                      url, error) =>
+                                                                  new Icon(Icons.error),
+                                                            ),
+                                                          ),
+                                                        ),
+                                                        SizedBox(height: 10),
+                                                        GestureDetector(
+                                                          onTap: (){
+                                                            Global.materialNavigate(context, ContentImageUrl(url: "https://gatewaybucil2.my.id/order/" + _order[index].imageReceipt)).then((value) {
+                                                              // Dialogs.hideDialog(context: context);
+                                                            });
+                                                          },
+                                                          child: Container(
+                                                            width: 200,
+                                                            height: 200,
+                                                            child: CachedNetworkImage(
+                                                              imageUrl:
+                                                                  "https://gatewaybucil2.my.id/order/" +
+                                                                      _order[index]
+                                                                          .imageReceipt,
+                                                              placeholder: (context,
+                                                                      url) =>
+                                                                  new CircularProgressIndicator(),
+                                                              errorWidget: (context,
+                                                                      url, error) =>
+                                                                  new Icon(Icons.error),
+                                                            ),
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ),
+                                                );
+                                              });
+                                        },
+                                        child: Text("GAMBAR",
+                                            style: TextStyle(color: Colors.blue)),
+                                      )
+                                    ],
+                                    if (_order[index].image != "") ...[
+                                      SizedBox(height: 20),
+                                      GestureDetector(
+                                        onTap: () {
+                                          showDialog(
+                                              context: context,
+                                              builder: (context) {
+                                                return Dialog(
+                                                  child: Padding(
+                                                    padding: const EdgeInsets.all(12),
+                                                    child: Column(
+                                                      mainAxisSize: MainAxisSize.min,
+                                                      children: [
+                                                        GestureDetector(
+                                                          onTap: (){
+                                                            Global.materialNavigate(context, ContentImageUrl(url: "https://gatewaybucil2.my.id/order/" + _order[index].image)).then((value) {
+                                                              // Dialogs.hideDialog(context: context);
+                                                            });
+                                                          },
+                                                          child: Container(
+                                                            width: 200,
+                                                            height: 200,
+                                                            child: CachedNetworkImage(
+                                                              imageUrl:
+                                                                  "https://gatewaybucil2.my.id/order/" + _order[index].image,
+                                                              placeholder: (context,
+                                                                      url) =>
+                                                                  new CircularProgressIndicator(),
+                                                              errorWidget: (context,
+                                                                      url, error) =>
+                                                                  new Icon(Icons.error),
+                                                            ),
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ),
+                                                );
+                                              });
+                                        },
+                                        child: Text("GAMBAR 2",
+                                            style: TextStyle(color: Colors.blue)),
+                                      )
+                                    ],
+                                 ], 
+                                )
+                              ],
+                            ),
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                ),
+              ] else ...[
+                SizedBox(height: 80),
+                Image.asset(
+                  'assets/file-storage.png',
+                  width: 100.0,
+                  fit: BoxFit.cover,
+                ),
+                SizedBox(height: 10),
+                Text("Tidak ada data")
+              ]
+            ],
+          )),
     );
   }
 
@@ -615,7 +616,7 @@ class _ContentOrderHistoryState extends State<ContentOrderHistory> {
           select();
         });
       }
-      else if (_order.statusConfirm == "3") {
+      else if (_order.statusConfirm == "3" || _order.statusConfirm == "4") {
         Global.materialNavigate(context, ContentOrderImage(order: _order))
             .then((value) {
           select();

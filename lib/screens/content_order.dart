@@ -24,7 +24,7 @@ class _ContentOrderState extends State<ContentOrder> {
   bool _loading = false;
   List<Customer> _customerFull = [];
   List<Customer> _customer = [];
-  DateTime date = DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day-1);
+  DateTime date = DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day+1);
   TextEditingController _searchController = new TextEditingController();
   TextEditingController _customerController = new TextEditingController();
   TextEditingController _alamatController = new TextEditingController();
