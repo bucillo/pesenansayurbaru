@@ -12,12 +12,14 @@ class Order {
   final String statusConfirm;
   final String imageSent;
   final String imageReceipt;
+  final String image;
   final String active;
 
   Order(
       {this.id = "0",
       this.imageSent = "",
       this.imageReceipt = "",
+      this.image = "",
       this.code,
       this.date,
       this.customerName,
@@ -38,6 +40,7 @@ class Order {
         statusConfirm = json["status_confirm"],
         imageSent = json["image_sent"],
         imageReceipt = json["image_receipt"],
+        image = json["image"],
         active = json["active"];
 
   Map<String, dynamic> toJson() => <String, dynamic>{
@@ -51,6 +54,7 @@ class Order {
         'status_confirm': this.statusConfirm,
         'image_sent': this.imageSent,
         'image_receipt': this.imageReceipt,
+        'image': this.image,
         'active': this.active
       };
 
@@ -170,6 +174,28 @@ class Order {
     final response = await Global.postTimeout(
         context: context,
         url: "Transaksi_Pembelian/sendData",
+        data: _parameter,
+        withLoading: showLoading);
+
+    return response;
+  }
+
+
+  static Future<Map> setImage(
+      {@required BuildContext context,
+      @required String code,
+      @required String attachment,
+      bool showLoading = true}) async {
+    Map _parameter = {
+      "token": Global.getShared(key: Prefs.PREFS_USER_TOKEN),
+      "hash": Global.getShared(key: Prefs.PREFS_USER_HASH),
+      "code": code,
+      "attachment": attachment
+    };
+
+    final response = await Global.postTimeout(
+        context: context,
+        url: "Transaksi_Pembelian/setImageData",
         data: _parameter,
         withLoading: showLoading);
 

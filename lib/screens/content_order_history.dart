@@ -1,6 +1,8 @@
 import 'package:PesenSayur/models/api.dart';
 import 'package:PesenSayur/models/order.dart';
+import 'package:PesenSayur/screens/content_image_url.dart';
 import 'package:PesenSayur/screens/content_order.dart';
+import 'package:PesenSayur/screens/content_order_image.dart';
 import 'package:PesenSayur/screens/content_order_send.dart';
 import 'package:PesenSayur/util/dialog.dart';
 import 'package:PesenSayur/util/global.dart';
@@ -325,8 +327,9 @@ class _ContentOrderHistoryState extends State<ContentOrderHistory> {
                                     if (_order[index].statusConfirm == "0" &&
                                         _order[index].active == "1")
                                       _dialogAction(_order[index]);
-                                  } else {
-                                    if (_order[index].statusConfirm == "2" &&
+                                  } 
+                                  else {
+                                    if (_order[index].statusConfirm != "0" &&
                                         _order[index].active == "1")
                                       _dialogAction(_order[index]);
                                   }
@@ -363,61 +366,121 @@ class _ContentOrderHistoryState extends State<ContentOrderHistory> {
                                 subtitle: Row(
                                   children: [
                                     Expanded(child: Text(detail)),
-                                    if (_order[index].imageSent != "") ...[
-                                      GestureDetector(
-                                        onTap: () {
-                                          showDialog(
-                                              context: context,
-                                              builder: (context) {
-                                                return Dialog(
-                                                  child: Padding(
-                                                    padding: const EdgeInsets.all(12),
-                                                    child: Column(
-                                                      mainAxisSize: MainAxisSize.min,
-                                                      children: [
-                                                        Container(
-                                                          width: 200,
-                                                          height: 200,
-                                                          child: CachedNetworkImage(
-                                                            imageUrl:
-                                                                "https://gatewaybucil2.my.id/order/" +
-                                                                    _order[index]
-                                                                        .imageSent,
-                                                            placeholder: (context,
-                                                                    url) =>
-                                                                new CircularProgressIndicator(),
-                                                            errorWidget: (context,
-                                                                    url, error) =>
-                                                                new Icon(Icons.error),
-                                                          ),
+                                    Column(
+                                     children: [
+                                       if (_order[index].imageSent != "") ...[
+                                          GestureDetector(
+                                            onTap: () {
+                                              showDialog(
+                                                  context: context,
+                                                  builder: (context) {
+                                                    return Dialog(
+                                                      child: Padding(
+                                                        padding: const EdgeInsets.all(12),
+                                                        child: Column(
+                                                          mainAxisSize: MainAxisSize.min,
+                                                          children: [
+                                                            GestureDetector(
+                                                              onTap: (){
+                                                                Global.materialNavigate(context, ContentImageUrl(url: "https://gatewaybucil2.my.id/order/" + _order[index].imageSent)).then((value) {
+                                                                  // Dialogs.hideDialog(context: context);
+                                                                });
+                                                              },
+                                                              child: Container(
+                                                                width: 200,
+                                                                height: 200,
+                                                                child: CachedNetworkImage(
+                                                                  imageUrl:
+                                                                      "https://gatewaybucil2.my.id/order/" + _order[index].imageSent,
+                                                                  placeholder: (context,
+                                                                          url) =>
+                                                                      new CircularProgressIndicator(),
+                                                                  errorWidget: (context,
+                                                                          url, error) =>
+                                                                      new Icon(Icons.error),
+                                                                ),
+                                                              ),
+                                                            ),
+                                                            SizedBox(height: 10),
+                                                            GestureDetector(
+                                                              onTap: (){
+                                                                Global.materialNavigate(context, ContentImageUrl(url: "https://gatewaybucil2.my.id/order/" + _order[index].imageReceipt)).then((value) {
+                                                                  // Dialogs.hideDialog(context: context);
+                                                                });
+                                                              },
+                                                              child: Container(
+                                                                width: 200,
+                                                                height: 200,
+                                                                child: CachedNetworkImage(
+                                                                  imageUrl:
+                                                                      "https://gatewaybucil2.my.id/order/" +
+                                                                          _order[index]
+                                                                              .imageReceipt,
+                                                                  placeholder: (context,
+                                                                          url) =>
+                                                                      new CircularProgressIndicator(),
+                                                                  errorWidget: (context,
+                                                                          url, error) =>
+                                                                      new Icon(Icons.error),
+                                                                ),
+                                                              ),
+                                                            ),
+                                                          ],
                                                         ),
-                                                        SizedBox(height: 10),
-                                                        Container(
-                                                          width: 200,
-                                                          height: 200,
-                                                          child: CachedNetworkImage(
-                                                            imageUrl:
-                                                                "https://gatewaybucil2.my.id/order/" +
-                                                                    _order[index]
-                                                                        .imageReceipt,
-                                                            placeholder: (context,
-                                                                    url) =>
-                                                                new CircularProgressIndicator(),
-                                                            errorWidget: (context,
-                                                                    url, error) =>
-                                                                new Icon(Icons.error),
-                                                          ),
+                                                      ),
+                                                    );
+                                                  });
+                                            },
+                                            child: Text("GAMBAR",
+                                                style: TextStyle(color: Colors.blue)),
+                                          )
+                                        ],
+                                        if (_order[index].image != "") ...[
+                                          SizedBox(height: 20),
+                                          GestureDetector(
+                                            onTap: () {
+                                              showDialog(
+                                                  context: context,
+                                                  builder: (context) {
+                                                    return Dialog(
+                                                      child: Padding(
+                                                        padding: const EdgeInsets.all(12),
+                                                        child: Column(
+                                                          mainAxisSize: MainAxisSize.min,
+                                                          children: [
+                                                            GestureDetector(
+                                                              onTap: (){
+                                                                Global.materialNavigate(context, ContentImageUrl(url: "https://gatewaybucil2.my.id/order/" + _order[index].imageSent)).then((value) {
+                                                                  // Dialogs.hideDialog(context: context);
+                                                                });
+                                                              },
+                                                              child: Container(
+                                                                width: 200,
+                                                                height: 200,
+                                                                child: CachedNetworkImage(
+                                                                  imageUrl:
+                                                                      "https://gatewaybucil2.my.id/order/" + _order[index].image,
+                                                                  placeholder: (context,
+                                                                          url) =>
+                                                                      new CircularProgressIndicator(),
+                                                                  errorWidget: (context,
+                                                                          url, error) =>
+                                                                      new Icon(Icons.error),
+                                                                ),
+                                                              ),
+                                                            ),
+                                                          ],
                                                         ),
-                                                      ],
-                                                    ),
-                                                  ),
-                                                );
-                                              });
-                                        },
-                                        child: Text("GAMBAR",
-                                            style: TextStyle(color: Colors.blue)),
-                                      )
-                                    ]
+                                                      ),
+                                                    );
+                                                  });
+                                            },
+                                            child: Text("GAMBAR 2",
+                                                style: TextStyle(color: Colors.blue)),
+                                          )
+                                        ],
+                                     ], 
+                                    )
                                   ],
                                 ),
                               ),
@@ -543,9 +606,17 @@ class _ContentOrderHistoryState extends State<ContentOrderHistory> {
                   ),
                 );
               }));
-    } else {
+    } 
+    else {
+      print("TEST");
       if (_order.statusConfirm == "2") {
         Global.materialNavigate(context, ContentOrderSend(order: _order))
+            .then((value) {
+          select();
+        });
+      }
+      else if (_order.statusConfirm == "3") {
+        Global.materialNavigate(context, ContentOrderImage(order: _order))
             .then((value) {
           select();
         });
