@@ -84,7 +84,7 @@ class _ContentOrderImageState extends State<ContentOrderImage> {
                     child: GestureDetector(
                       onTap: () => picker(context, ImageSource.camera),
                       child: Container(
-                        width: 150,
+                        width: 350,
                         height: 250,
                         color: Colors.black12,
                         child: (image == null)
@@ -106,16 +106,15 @@ class _ContentOrderImageState extends State<ContentOrderImage> {
     if (image == null) {
       Dialogs.showSimpleText(
           context: context, text: "Foto pesanan terlebih dahulu");
-    }
-    else {
+    } else {
       final response = API.fromJson(await Order.setImage(
           context: context,
           code: widget.order.id,
           attachment: Global.base64Image(file: image)));
       if (response.success) {
         Dialogs.hideDialog(context: context);
-      } 
-      else Dialogs.showSimpleText(context: context, text: response.message);
+      } else
+        Dialogs.showSimpleText(context: context, text: response.message);
     }
   }
 
@@ -126,8 +125,7 @@ class _ContentOrderImageState extends State<ContentOrderImage> {
           source: _imageSource, maxWidth: 800, maxHeight: 800);
       if (img != null) {
         // String img64 = Global.base64Image(file: img);
-        if (type == 0)
-          image = img;
+        if (type == 0) image = img;
 
         setState(() {});
       }

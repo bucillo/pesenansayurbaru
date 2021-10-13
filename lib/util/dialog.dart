@@ -419,6 +419,16 @@ class Dialogs {
                         action(3);
                       },
                     ),
+                    Divider(),
+                    InkWell(
+                      child: Padding(
+                        padding: EdgeInsets.all(10),
+                        child: Text("On FINISH"),
+                      ),
+                      onTap: () {
+                        action(4);
+                      },
+                    ),
                   ],
                 ))));
   }

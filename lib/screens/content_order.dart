@@ -24,12 +24,14 @@ class _ContentOrderState extends State<ContentOrder> {
   bool _loading = false;
   List<Customer> _customerFull = [];
   List<Customer> _customer = [];
-  DateTime date = DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day+1);
+  DateTime date = DateTime(
+      DateTime.now().year, DateTime.now().month, DateTime.now().day + 1);
   TextEditingController _searchController = new TextEditingController();
   TextEditingController _customerController = new TextEditingController();
   TextEditingController _alamatController = new TextEditingController();
   TextEditingController _telpController = new TextEditingController();
   TextEditingController _descController = new TextEditingController();
+  TextEditingController _descController2 = new TextEditingController();
   String hour = "";
   String minute = "";
 
@@ -41,6 +43,7 @@ class _ContentOrderState extends State<ContentOrder> {
       _alamatController.text = widget.order.customerAddress;
       _telpController.text = widget.order.customerPhone;
       _descController.text = widget.order.description;
+      //    _descController2.text = widget.order.description2;
       date = DateTime(
           int.parse(Global.formatDate(
               date: widget.order.date, outputPattern: Global.DATETIME_YEAR)),
@@ -64,7 +67,7 @@ class _ContentOrderState extends State<ContentOrder> {
     _customerController.dispose();
     _alamatController.dispose();
     _telpController.dispose();
-    _descController.dispose();
+    _descController2.dispose();
     super.dispose();
   }
 
@@ -153,11 +156,13 @@ class _ContentOrderState extends State<ContentOrder> {
                                 context: context,
                                 builder: (BuildContext context, Widget child) {
                                   return MediaQuery(
-                                    data: MediaQuery.of(context).copyWith(alwaysUse24HourFormat: true),
+                                    data: MediaQuery.of(context)
+                                        .copyWith(alwaysUse24HourFormat: true),
                                     child: child,
                                   );
                                 },
-                                initialTime: TimeOfDay.fromDateTime(DateTime.now()));
+                                initialTime:
+                                    TimeOfDay.fromDateTime(DateTime.now()));
                             if (time != null) {
                               String dateNow = Global.getCurrentDate(
                                   format: Global.DATETIME_DATABASE_DATE);
@@ -290,6 +295,24 @@ class _ContentOrderState extends State<ContentOrder> {
                                   controller: _telpController,
                                   keyboardType: TextInputType.number,
                                   onChanged: (value) {},
+                                  style: TextStyle(
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                          Row(
+                            mainAxisSize: MainAxisSize.max,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              Text("Pemberitahuan : "),
+                              Flexible(
+                                child: TextFormField(
+                                  controller: _descController2,
+                                  keyboardType: TextInputType.multiline,
                                   style: TextStyle(
                                     fontSize: 18,
                                     fontWeight: FontWeight.bold,
@@ -437,7 +460,8 @@ class _ContentOrderState extends State<ContentOrder> {
             customerName: _customerController.text,
             customerAddress: _alamatController.text,
             customerPhone: _telpController.text,
-            description: _descController.text));
+            description: _descController.text,
+            description2: _descController2.text));
         if (response.success) {
           Global.materialNavigateReplace(context, ContentOrderHistory());
           Dialogs.hideDialog(context: context);
@@ -452,7 +476,8 @@ class _ContentOrderState extends State<ContentOrder> {
             customerName: _customerController.text,
             customerAddress: _alamatController.text,
             customerPhone: _telpController.text,
-            description: _descController.text));
+            description: _descController.text,
+            description2: _descController2.text));
         if (response.success) {
           Dialogs.hideDialog(context: context);
         } else

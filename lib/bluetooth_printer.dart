@@ -109,12 +109,14 @@ class Printing {
       if (n.active == "1") {
         if (n.statusConfirm == "2") result += "ON PROSES\n";
         if (n.statusConfirm == "3") result += "ON SEND\n";
-        // result += "================================\n";
+        if (n.statusConfirm == "4") result += "ON FINISH\n";
+        // result += "================================\4n";
         result += n.code + "\n";
         result += n.date + "\n";
         result += "Nama: " + n.customerName + "\n";
         result += "Alamat: " + n.customerAddress + "\n";
         result += "Phone: " + n.customerPhone + "\n";
+        result += "Keterangan tambahan:\n " + n.description2 + "\n";
         result += "Order:\n";
         result += n.description + "\n\n\n";
       }

@@ -9,6 +9,7 @@ class Order {
   final String customerAddress;
   final String customerPhone;
   final String description;
+  final String description2;
   final String statusConfirm;
   final String imageSent;
   final String imageReceipt;
@@ -26,6 +27,7 @@ class Order {
       this.customerAddress,
       this.customerPhone,
       this.description,
+      this.description2,
       this.statusConfirm,
       this.active});
 
@@ -37,6 +39,7 @@ class Order {
         customerAddress = json["customer_address"],
         customerPhone = json["customer_phone"],
         description = json["description"],
+        description2 = json["description2"],
         statusConfirm = json["status_confirm"],
         imageSent = json["image_sent"],
         imageReceipt = json["image_receipt"],
@@ -51,6 +54,7 @@ class Order {
         'customer_address': this.customerAddress,
         'customer_phone': this.customerPhone,
         'description': this.description,
+        'description2': this.description2,
         'status_confirm': this.statusConfirm,
         'image_sent': this.imageSent,
         'image_receipt': this.imageReceipt,
@@ -63,13 +67,15 @@ class Order {
       @required String dateStart,
       @required String dateEnd,
       String confirm = "%",
+      String type = "4",
       bool showLoading = true}) async {
     Map _parameter = {
       "token": Global.getShared(key: Prefs.PREFS_USER_TOKEN),
       "hash": Global.getShared(key: Prefs.PREFS_USER_HASH),
       "date_start": dateStart,
       "date_end": dateEnd,
-      "confirm": confirm
+      "confirm": confirm,
+      "type": type
     };
 
     final response = await Global.postTimeout(
@@ -85,6 +91,7 @@ class Order {
       {@required BuildContext context,
       @required String date,
       @required String description,
+      @required String description2,
       @required String customerName,
       @required String customerAddress,
       @required String customerPhone,
@@ -95,6 +102,7 @@ class Order {
       "store_id": Global.getShared(key: Prefs.PREFS_USER_STORE_ID),
       "date": date,
       "description": description,
+      "description2": description2,
       "customer_name": customerName,
       "customer_address": customerAddress,
       "customer_phone": customerPhone,
@@ -114,6 +122,7 @@ class Order {
       @required String code,
       @required String date,
       @required String description,
+      @required String description2,
       @required String customerName,
       @required String customerAddress,
       @required String customerPhone,
@@ -124,6 +133,7 @@ class Order {
       "code": code,
       "date": date,
       "description": description,
+      "description2": description2,
       "customer_name": customerName,
       "customer_address": customerAddress,
       "customer_phone": customerPhone,
@@ -179,7 +189,6 @@ class Order {
 
     return response;
   }
-
 
   static Future<Map> setImage(
       {@required BuildContext context,
