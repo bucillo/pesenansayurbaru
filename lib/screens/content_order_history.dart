@@ -1,4 +1,5 @@
 import 'package:PesenSayur/models/api.dart';
+import 'package:PesenSayur/models/customer.dart';
 import 'package:PesenSayur/models/order.dart';
 import 'package:PesenSayur/screens/content_image_url.dart';
 import 'package:PesenSayur/screens/content_order.dart';
@@ -27,10 +28,13 @@ class ContentOrderHistory extends StatefulWidget {
 class _ContentOrderHistoryState extends State<ContentOrderHistory> {
   int totalTransaction = 0;
   List<Order> _order = [];
+  List<Order> _orderfull = [];
   List<Product> product;
+  List<String> customer = []; 
   DateTime dateStart = DateTime.now();
   DateTime dateEnd = DateTime.now();
   String _pilih;
+  String _cutomerSelected;
 
   @override
   void initState() {
@@ -182,45 +186,86 @@ class _ContentOrderHistoryState extends State<ContentOrderHistory> {
               ),
             ),
           ),
-          Container(
-              margin: const EdgeInsets.symmetric(horizontal: 10),
-              child:
-                  // Card(
-                  //   shape: RoundedRectangleBorder(
-                  //     borderRadius: BorderRadius.circular(50.0),
-                  //   ),
-                  // )
-                  Container(
-                padding: const EdgeInsets.all(0.0),
-                child: DropdownButton<String>(
-                  value: _pilih,
-                  style: TextStyle(color: Colors.black),
-                  items: <String>[
-                    'BELUM KONFIRMASI',
-                    'SUDAH KONFIRMASI',
-                    'ON PROSES',
-                    'ON SEND',
-                    'FINISH',
-                  ].map<DropdownMenuItem<String>>((String value) {
-                    return DropdownMenuItem<String>(
-                      value: value,
-                      child: Text(value),
-                    );
-                  }).toList(),
-                  hint: Text(
-                    "Silahkan Pilih Status",
-                    style: TextStyle(
-                        color: Colors.black,
-                        fontSize: 16,
-                        fontWeight: FontWeight.w600),
-                  ),
-                  onChanged: (String value) {
-                    setState(() {
-                      _pilih = value;
-                    });
-                  },
+          Row(
+            children: [
+              Expanded(
+                child: Container(
+                    margin: const EdgeInsets.symmetric(horizontal: 10),
+                    child:
+                        // Card(
+                        //   shape: RoundedRectangleBorder(
+                        //     borderRadius: BorderRadius.circular(50.0),
+                        //   ),
+                        // )
+                        DropdownButton<String>(
+                          isExpanded: true,
+                          value: _pilih,
+                          style: TextStyle(color: Colors.black),
+                          items: <String>[
+                            'SEMUA',
+                            'BELUM KONFIRMASI',
+                            'SUDAH KONFIRMASI',
+                            'ON PROSES',
+                            'ON SEND',
+                            'FINISH',
+                          ].map<DropdownMenuItem<String>>((String value) {
+                            return DropdownMenuItem<String>(
+                              value: value,
+                              child: Text(value),
+                            );
+                          }).toList(),
+                          hint: Text(
+                            "Silahkan Pilih Status",
+                            style: TextStyle(
+                                color: Colors.black,
+                                fontSize: 16,
+                                fontWeight: FontWeight.w600),
+                          ),
+                          onChanged: (String value) {
+                            setState(() {
+                              _pilih = value;
+                            });
+                            _filter();
+                          },
+                        )),
+              ),
+            ],
+          ),
+          if (customer != null) ...[
+            Row(
+              children: [
+                Expanded(
+                  child: Container(
+                      margin: const EdgeInsets.symmetric(horizontal: 10),
+                      child:
+                          DropdownButton<String>(
+                            isExpanded: true,
+                            value: _cutomerSelected,
+                            style: TextStyle(color: Colors.black),
+                            items: customer.map<DropdownMenuItem<String>>((String data) {
+                              return DropdownMenuItem<String>(
+                                value: data,
+                                child: Text(data),
+                              );
+                            }).toList(),
+                            hint: Text(
+                              "Customer",
+                              style: TextStyle(
+                                  color: Colors.black,
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w600),
+                            ),
+                            onChanged: (String value) {
+                              setState(() {
+                                _cutomerSelected = value;
+                              });
+                              _filter();
+                            },
+                          )),
                 ),
-              )),
+              ],
+            ),
+          ],
           SizedBox(height: 20),
           Container(
             margin: const EdgeInsets.symmetric(horizontal: 10),
@@ -590,6 +635,9 @@ class _ContentOrderHistoryState extends State<ContentOrderHistory> {
   Future<void> select() async {
     totalTransaction = 0;
     _order = [];
+    _orderfull = [];
+    customer = [];
+    customer.add("SEMUA");
 
     final response = API.fromJson(await Order.select(
         context: context,
@@ -606,13 +654,17 @@ class _ContentOrderHistoryState extends State<ContentOrderHistory> {
         }
 
         if (canShow) {
+          if(!customer.contains(orderData.customerName)) customer.add(orderData.customerName);
+
           totalTransaction++;
           _order.add(orderData);
+          _orderfull.add(orderData);
         }
       });
     }
 
     setState(() {});
+    _filter();
   }
 
   Future<void> delete(Order _order) async {
@@ -632,6 +684,41 @@ class _ContentOrderHistoryState extends State<ContentOrderHistory> {
     //   select();
     // } else
     //   Dialogs.showSimpleText(context: context, text: response.message);
+  }
+
+  void _filter() {
+    _order = [];
+    totalTransaction = 0;
+
+    for(int i=0; i<_orderfull.length; i++){
+      bool canAdd = true;
+      String _pilihConvert = "";
+      
+      if (_pilih == "" || _pilih == null) _pilihConvert = "";
+      if (_pilih == "SEMUA") _pilihConvert = "";
+      if (_pilih == "BELUM KONFIRMASI") _pilihConvert = "0";
+      if (_pilih == "SUDAH KONFIRMASI") _pilihConvert = "1";
+      if (_pilih == "ON PROSES") _pilihConvert = "2";
+      if (_pilih == "ON SEND") _pilihConvert = "3";
+      if (_pilih == "FINISH") _pilihConvert = "4";
+
+      if(_pilihConvert!=""){
+        if(_pilihConvert != _orderfull[i].statusConfirm) canAdd = false;
+      }
+
+      if(canAdd){
+        if(_cutomerSelected != "" && _cutomerSelected != null){
+          if(_cutomerSelected!=_orderfull[i].customerName)  canAdd = false;
+        }
+        if(_cutomerSelected == "SEMUA") canAdd = true;
+      }
+
+      if(canAdd){
+        _order.add(_orderfull[i]);
+        totalTransaction++;
+      }
+    }
+    setState(() {});
   }
 
   void _dialogAction(Order _order) {
