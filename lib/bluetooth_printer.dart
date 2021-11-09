@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:PesenSayur/models/order.dart';
+import 'package:PesenSayur/models/order_detail.dart';
 import 'package:PesenSayur/models/printer.dart';
 import 'package:PesenSayur/models/product_print.dart';
 import 'package:PesenSayur/models/shift.dart';
@@ -116,11 +117,22 @@ class Printing {
         result += "Nama: " + n.customerName + "\n";
         result += "Alamat: " + n.customerAddress + "\n";
         result += "Phone: " + n.customerPhone + "\n";
-        result += "Keterangan tambahan:\n " + n.description2 + "\n";
-        result += "Order:\n";
-        result += n.description + "\n\n\n";
+
+        if(n.description2 != ""){
+          result += "Keterangan tambahan:\n " + n.description + "\n";
+        }
+
+        result += "Order:";
+        List<dynamic> temp = List<dynamic>.from(n.detail as List);
+        temp.forEach((data) {
+          OrderDetail orderDetail = new OrderDetail.fromJson(data);
+          result += "\n" + Global.delimeter(number: orderDetail.qty.toString()) + "x " + orderDetail.name;
+        });
+        result += "\n\n\n";
       }
     });
+
+    print(result);
     return result;
   }
 }

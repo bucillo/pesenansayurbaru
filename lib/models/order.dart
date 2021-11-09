@@ -1,3 +1,4 @@
+import 'package:PesenSayur/models/order_detail.dart';
 import 'package:flutter/material.dart';
 import 'package:PesenSayur/util/global.dart';
 
@@ -15,6 +16,7 @@ class Order {
   final String imageReceipt;
   final String image;
   final String active;
+  final detail;
 
   Order(
       {this.id = "0",
@@ -29,7 +31,8 @@ class Order {
       this.description,
       this.description2,
       this.statusConfirm,
-      this.active});
+      this.active,
+      this.detail});
 
   Order.fromJson(Map<String, dynamic> json)
       : id = json["order_id"],
@@ -44,7 +47,8 @@ class Order {
         imageSent = json["image_sent"],
         imageReceipt = json["image_receipt"],
         image = json["image"],
-        active = json["active"];
+        active = json["active"],
+        detail = json["detail"];
 
   Map<String, dynamic> toJson() => <String, dynamic>{
         'order_id': this.id,
@@ -59,7 +63,8 @@ class Order {
         'image_sent': this.imageSent,
         'image_receipt': this.imageReceipt,
         'image': this.image,
-        'active': this.active
+        'active': this.active,
+        'detail': this.detail
       };
 
   static Future<Map> select(
@@ -91,10 +96,10 @@ class Order {
       {@required BuildContext context,
       @required String date,
       @required String description,
-      @required String description2,
       @required String customerName,
       @required String customerAddress,
       @required String customerPhone,
+      @required List<OrderDetail> orderDetail,
       bool showLoading = true}) async {
     Map _parameter = {
       "token": Global.getShared(key: Prefs.PREFS_USER_TOKEN),
@@ -102,15 +107,15 @@ class Order {
       "store_id": Global.getShared(key: Prefs.PREFS_USER_STORE_ID),
       "date": date,
       "description": description,
-      "description2": description2,
       "customer_name": customerName,
       "customer_address": customerAddress,
       "customer_phone": customerPhone,
+      "detail": orderDetail,
     };
 
     final response = await Global.postTimeout(
         context: context,
-        url: "Transaksi_Pembelian/insertDataReseller",
+        url: "Transaksi_Pembelian/insertDataResellerNew",
         data: _parameter,
         withLoading: showLoading);
 
@@ -122,10 +127,10 @@ class Order {
       @required String code,
       @required String date,
       @required String description,
-      @required String description2,
       @required String customerName,
       @required String customerAddress,
       @required String customerPhone,
+      @required List<OrderDetail> orderDetail,
       bool showLoading = true}) async {
     Map _parameter = {
       "token": Global.getShared(key: Prefs.PREFS_USER_TOKEN),
@@ -133,15 +138,15 @@ class Order {
       "code": code,
       "date": date,
       "description": description,
-      "description2": description2,
       "customer_name": customerName,
       "customer_address": customerAddress,
       "customer_phone": customerPhone,
+      "detail": orderDetail,
     };
 
     final response = await Global.postTimeout(
         context: context,
-        url: "Transaksi_Pembelian/updateDataReseller",
+        url: "Transaksi_Pembelian/updateDataResellerNew",
         data: _parameter,
         withLoading: showLoading);
 

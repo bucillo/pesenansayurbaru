@@ -1,10 +1,15 @@
+import 'dart:convert';
+
 import 'package:PesenSayur/models/api.dart';
 import 'package:PesenSayur/models/customer.dart';
 import 'package:PesenSayur/models/order.dart';
+import 'package:PesenSayur/models/order_detail.dart';
 import 'package:PesenSayur/screens/content_image_url.dart';
 import 'package:PesenSayur/screens/content_order.dart';
+import 'package:PesenSayur/screens/content_order_cart.dart';
 import 'package:PesenSayur/screens/content_order_image.dart';
 import 'package:PesenSayur/screens/content_order_send.dart';
+import 'package:PesenSayur/screens/content_ticket.dart';
 import 'package:PesenSayur/util/dialog.dart';
 import 'package:PesenSayur/util/global.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -272,41 +277,19 @@ class _ContentOrderHistoryState extends State<ContentOrderHistory> {
             child: Row(
               children: [
                 Align(
-                    alignment: Alignment.center,
-                    child: Text("Aktifitas",
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            color: Colors.black26))),
-                if (Global.getShared(key: Prefs.PREFS_USER_TYPE) == "3") ...[
-                  Expanded(
-                    child: Align(
-                      alignment: Alignment.centerRight,
-                      child: Container(
-                        margin: EdgeInsets.only(left: 10),
-                        decoration: BoxDecoration(
-                          color: Constants.darkAccent,
-                          borderRadius: BorderRadius.horizontal(
-                            left: Radius.circular(15),
-                            right: Radius.circular(15),
-                          ),
-                        ),
-                        child: IconButton(
-                            icon:
-                                Icon(Icons.add, color: Colors.white, size: 20),
-                            onPressed: () {
-                              Global.materialNavigate(
-                                      context, ContentOrder(datetime: dateEnd))
-                                  .then((value) => select());
-                            }),
-                      ),
-                    ),
-                  )
-                ] else ...[
-                  if (_order.length > 0) ...[
-                    Expanded(
-                      child: Align(
-                        alignment: Alignment.centerRight,
-                        child: Container(
+                  alignment: Alignment.center,
+                  child: Text("Aktifitas",
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black26))
+                ),
+                Expanded(
+                  child: Align(
+                    alignment: Alignment.centerRight,
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Container(
                           margin: EdgeInsets.only(left: 10),
                           decoration: BoxDecoration(
                             color: Constants.darkAccent,
@@ -316,61 +299,195 @@ class _ContentOrderHistoryState extends State<ContentOrderHistory> {
                             ),
                           ),
                           child: IconButton(
-                              icon: Icon(Icons.print,
-                                  color: Colors.white, size: 20),
-                              onPressed: () async {
-                                List<Order> order = [];
-                                Dialogs.showPrintCategory(
-                                    context: context,
-                                    action: (result) async {
-                                      Dialogs.hideDialog(context: context);
-                                      for (int i = 0; i < _order.length; i++) {
-                                        if (_order[i].active == "1") {
-                                          if (result == 0) {
-                                            if (_order[i].statusConfirm == "0")
-                                              order.add(_order[i]);
-                                          } else if (result == 2) {
-                                            if (_order[i].statusConfirm == "2")
-                                              order.add(_order[i]);
-                                          } else if (result == 3) {
-                                            if (_order[i].statusConfirm == "2")
-                                              order.add(_order[i]);
-                                          } else
-                                            order.add(_order[i]);
-                                        }
-                                      }
-
-                                      bool printSuccess = await Printing()
-                                          .printReseller(context, order);
-
-                                      if (printSuccess) {
-                                        for (int i = 0;
-                                            i < _order.length;
-                                            i++) {
-                                          if (_order[i].active == "1") {
-                                            if (result == -1 || result == 0) {
-                                              if (_order[i].statusConfirm ==
-                                                  "0") {
-                                                final response = API.fromJson(
-                                                    await Order.print(
-                                                        context: context,
-                                                        code: _order[i].id));
-                                              }
-                                            }
-                                          }
-                                        }
-                                        select();
-                                      } else
-                                        Dialogs.showSimpleText(
-                                            context: context,
-                                            text: "Print Gagal");
-                                    });
+                              icon: Icon(Icons.message, color: Colors.white, size: 20),
+                              onPressed: () {
+                                Global.materialNavigate(context, ContentTicket())
+                                    .then((value) => select());
                               }),
                         ),
-                      ),
-                    )
-                  ]
-                ]
+                        if (Global.getShared(key: Prefs.PREFS_USER_TYPE) == "3") ...[
+                          Container(
+                            margin: EdgeInsets.only(left: 10),
+                            decoration: BoxDecoration(
+                              color: Constants.darkAccent,
+                              borderRadius: BorderRadius.horizontal(
+                                left: Radius.circular(15),
+                                right: Radius.circular(15),
+                              ),
+                            ),
+                            child: IconButton(
+                                icon:
+                                    Icon(Icons.add, color: Colors.white, size: 20),
+                                onPressed: () {
+                                  Global.materialNavigate(
+                                          context, ContentOrderCart(datetime: dateEnd, orderDetail: []))
+                                      .then((value) => select());
+                                }),
+                          )
+                        ]
+                        else ...[
+                          if (_order.length > 0) ...[
+                            Container(
+                              margin: EdgeInsets.only(left: 10),
+                              decoration: BoxDecoration(
+                                color: Constants.darkAccent,
+                                borderRadius: BorderRadius.horizontal(
+                                  left: Radius.circular(15),
+                                  right: Radius.circular(15),
+                                ),
+                              ),
+                              child: IconButton(
+                                  icon: Icon(Icons.print,
+                                      color: Colors.white, size: 20),
+                                  onPressed: () async {
+                                    List<Order> order = [];
+                                    Dialogs.showPrintCategory(
+                                        context: context,
+                                        action: (result) async {
+                                          Dialogs.hideDialog(context: context);
+                                          for (int i = 0; i < _order.length; i++) {
+                                            if (_order[i].active == "1") {
+                                              if (result == 0) {
+                                                if (_order[i].statusConfirm == "0")
+                                                  order.add(_order[i]);
+                                              } else if (result == 2) {
+                                                if (_order[i].statusConfirm == "2")
+                                                  order.add(_order[i]);
+                                              } else if (result == 3) {
+                                                if (_order[i].statusConfirm == "2")
+                                                  order.add(_order[i]);
+                                              } else
+                                                order.add(_order[i]);
+                                            }
+                                          }
+
+                                          bool printSuccess = await Printing()
+                                              .printReseller(context, order);
+
+                                          if (printSuccess) {
+                                            for (int i = 0;
+                                                i < _order.length;
+                                                i++) {
+                                              if (_order[i].active == "1") {
+                                                if (result == -1 || result == 0) {
+                                                  if (_order[i].statusConfirm ==
+                                                      "0") {
+                                                    final response = API.fromJson(
+                                                        await Order.print(
+                                                            context: context,
+                                                            code: _order[i].id));
+                                                  }
+                                                }
+                                              }
+                                            }
+                                            select();
+                                          } else
+                                            Dialogs.showSimpleText(
+                                                context: context,
+                                                text: "Print Gagal");
+                                        });
+                                  }),
+                            )
+                          ]
+                        ]
+                      ],
+                    ),
+                  )
+                ),
+                // if (Global.getShared(key: Prefs.PREFS_USER_TYPE) == "3") ...[
+                //   Expanded(
+                //     child: Align(
+                //       alignment: Alignment.centerRight,
+                //       child: Container(
+                //         margin: EdgeInsets.only(left: 10),
+                //         decoration: BoxDecoration(
+                //           color: Constants.darkAccent,
+                //           borderRadius: BorderRadius.horizontal(
+                //             left: Radius.circular(15),
+                //             right: Radius.circular(15),
+                //           ),
+                //         ),
+                //         child: IconButton(
+                //             icon:
+                //                 Icon(Icons.add, color: Colors.white, size: 20),
+                //             onPressed: () {
+                //               Global.materialNavigate(
+                //                       context, ContentOrderCart(datetime: dateEnd, orderDetail: []))
+                //                   .then((value) => select());
+                //             }),
+                //       ),
+                //     ),
+                //   )
+                // ] else ...[
+                //   if (_order.length > 0) ...[
+                //     Expanded(
+                //       child: Align(
+                //         alignment: Alignment.centerRight,
+                //         child: Container(
+                //           margin: EdgeInsets.only(left: 10),
+                //           decoration: BoxDecoration(
+                //             color: Constants.darkAccent,
+                //             borderRadius: BorderRadius.horizontal(
+                //               left: Radius.circular(15),
+                //               right: Radius.circular(15),
+                //             ),
+                //           ),
+                //           child: IconButton(
+                //               icon: Icon(Icons.print,
+                //                   color: Colors.white, size: 20),
+                //               onPressed: () async {
+                //                 List<Order> order = [];
+                //                 Dialogs.showPrintCategory(
+                //                     context: context,
+                //                     action: (result) async {
+                //                       Dialogs.hideDialog(context: context);
+                //                       for (int i = 0; i < _order.length; i++) {
+                //                         if (_order[i].active == "1") {
+                //                           if (result == 0) {
+                //                             if (_order[i].statusConfirm == "0")
+                //                               order.add(_order[i]);
+                //                           } else if (result == 2) {
+                //                             if (_order[i].statusConfirm == "2")
+                //                               order.add(_order[i]);
+                //                           } else if (result == 3) {
+                //                             if (_order[i].statusConfirm == "2")
+                //                               order.add(_order[i]);
+                //                           } else
+                //                             order.add(_order[i]);
+                //                         }
+                //                       }
+
+                //                       bool printSuccess = await Printing()
+                //                           .printReseller(context, order);
+
+                //                       if (printSuccess) {
+                //                         for (int i = 0;
+                //                             i < _order.length;
+                //                             i++) {
+                //                           if (_order[i].active == "1") {
+                //                             if (result == -1 || result == 0) {
+                //                               if (_order[i].statusConfirm ==
+                //                                   "0") {
+                //                                 final response = API.fromJson(
+                //                                     await Order.print(
+                //                                         context: context,
+                //                                         code: _order[i].id));
+                //                               }
+                //                             }
+                //                           }
+                //                         }
+                //                         select();
+                //                       } else
+                //                         Dialogs.showSimpleText(
+                //                             context: context,
+                //                             text: "Print Gagal");
+                //                     });
+                //               }),
+                //         ),
+                //       ),
+                //     )
+                //   ]
+                // ]
               ],
             ),
           ),
@@ -383,6 +500,9 @@ class _ContentOrderHistoryState extends State<ContentOrderHistory> {
                 itemCount: _order.length,
                 itemBuilder: (context, index) {
                   String detail = "";
+                  List<OrderDetail> detailList = [];
+                  List<dynamic> temp = List<dynamic>.from(_order[index].detail as List);
+
                   if (_order[index].active == "1") {
                     if (_order[index].statusConfirm == "0")
                       detail = "\n[BELUM KONFIRMASI]\n";
@@ -403,9 +523,17 @@ class _ContentOrderHistoryState extends State<ContentOrderHistory> {
                   detail += "\nCustomer: " + _order[index].customerName;
                   detail += "\nAlamat: " + _order[index].customerAddress;
                   detail += "\nTelp: " + _order[index].customerPhone;
-                  detail += "\nKeterangan tambahan : \n " +
-                      _order[index].description2;
-                  detail += "\n\nPesanan:\n" + _order[index].description;
+
+                  if(_order[index].description != ""){
+                    detail += "\n\nKeterangan tambahan : \n " + _order[index].description;
+                  }
+                  detail += "\n\nPesanan:";
+
+                  temp.forEach((data) {
+                    OrderDetail orderDetail = new OrderDetail.fromJson(data);
+                    detailList.add(orderDetail);
+                    detail += "\n" + Global.delimeter(number: orderDetail.qty.toString()) + "x " + orderDetail.name;
+                  });
 
                   return Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 5),
@@ -728,8 +856,7 @@ class _ContentOrderHistoryState extends State<ContentOrderHistory> {
           builder: (context) => StatefulBuilder(builder: (context, setState) {
                 return AlertDialog(
                   elevation: 24,
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.all(Radius.circular(5))),
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(5))),
                   content: Container(
                     width: 150,
                     height: 100,
@@ -739,12 +866,26 @@ class _ContentOrderHistoryState extends State<ContentOrderHistory> {
                         children: [
                           GestureDetector(
                             onTap: () {
+                              List<OrderDetail> detail = [];
+                              List<dynamic> temp = List<dynamic>.from(_order.detail as List);
+                              temp.forEach((data) {
+                                OrderDetail orderDetail = new OrderDetail.fromJson(data);
+                                detail.add(orderDetail);
+                              });
+
                               Global.materialNavigate(
-                                      context, ContentOrder(order: _order))
-                                  .then((value) {
+                                  context, ContentOrderCart(datetime: dateEnd, order: _order, orderDetail: detail))
+                              .then((value){
                                 Dialogs.hideDialog(context: context);
                                 select();
                               });
+
+                              // Global.materialNavigate(
+                              //         context, ContentOrder(order: _order))
+                              //     .then((value) {
+                              //   Dialogs.hideDialog(context: context);
+                              //   select();
+                              // });
                             },
                             child: Image.asset(
                               'assets/edit.png',

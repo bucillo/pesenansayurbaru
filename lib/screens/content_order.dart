@@ -1,7 +1,11 @@
+import 'dart:convert';
+
 import 'package:PesenSayur/dialogs/customer.dart';
+import 'package:PesenSayur/dialogs/qty.dart';
 import 'package:PesenSayur/models/api.dart';
 import 'package:PesenSayur/models/customer.dart';
 import 'package:PesenSayur/models/order.dart';
+import 'package:PesenSayur/models/order_detail.dart';
 import 'package:PesenSayur/util/dialog.dart';
 import 'package:PesenSayur/util/global.dart';
 import 'package:flutter/material.dart';
@@ -12,8 +16,9 @@ import 'content_order_history.dart';
 
 class ContentOrder extends StatefulWidget {
   final Order order;
+  final List<OrderDetail> orderDetail;
   final DateTime datetime;
-  const ContentOrder({Key key, this.order, this.datetime}) : super(key: key);
+  const ContentOrder({Key key, this.order, this.datetime, this.orderDetail}) : super(key: key);
 
   @override
   _ContentOrderState createState() => _ContentOrderState();
@@ -31,7 +36,6 @@ class _ContentOrderState extends State<ContentOrder> {
   TextEditingController _alamatController = new TextEditingController();
   TextEditingController _telpController = new TextEditingController();
   TextEditingController _descController = new TextEditingController();
-  TextEditingController _descController2 = new TextEditingController();
   String hour = "";
   String minute = "";
 
@@ -43,7 +47,6 @@ class _ContentOrderState extends State<ContentOrder> {
       _alamatController.text = widget.order.customerAddress;
       _telpController.text = widget.order.customerPhone;
       _descController.text = widget.order.description;
-      //    _descController2.text = widget.order.description2;
       date = DateTime(
           int.parse(Global.formatDate(
               date: widget.order.date, outputPattern: Global.DATETIME_YEAR)),
@@ -67,7 +70,6 @@ class _ContentOrderState extends State<ContentOrder> {
     _customerController.dispose();
     _alamatController.dispose();
     _telpController.dispose();
-    _descController2.dispose();
     super.dispose();
   }
 
@@ -311,7 +313,7 @@ class _ContentOrderState extends State<ContentOrder> {
                               Text("Pemberitahuan : "),
                               Flexible(
                                 child: TextFormField(
-                                  controller: _descController2,
+                                  controller: _descController,
                                   keyboardType: TextInputType.multiline,
                                   style: TextStyle(
                                     fontSize: 18,
@@ -322,26 +324,90 @@ class _ContentOrderState extends State<ContentOrder> {
                             ],
                           ),
                           SizedBox(height: 20),
-                          Text("Pesanan: "),
-                          Row(
-                            mainAxisSize: MainAxisSize.max,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: [
-                              Flexible(
-                                child: TextFormField(
-                                  maxLines: 5,
-                                  controller: _descController,
-                                  keyboardType: TextInputType.multiline,
-                                  onChanged: (value) {},
-                                  style: TextStyle(
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.bold,
+                          Divider(height: 1, color: Colors.grey),
+                          ListView.builder(
+                              itemCount: widget.orderDetail.length,
+                              shrinkWrap: true,
+                              physics: const NeverScrollableScrollPhysics(),
+                              itemBuilder: (BuildContext context, int index) {
+                                return InkWell(
+                                  onTap: () {
+                                    print(jsonEncode(widget.orderDetail[index]));
+                                    QtyDialog.show(
+                                      context: context, 
+                                      name: widget.orderDetail[index].name, 
+                                      product: widget.orderDetail[index].product, 
+                                      qty: widget.orderDetail[index].qty, 
+                                      notes: widget.orderDetail[index].notes, 
+                                      action: (result, product, qty, notes){
+                                          if(result){
+                                            int indexExist = -1;
+                                            for(int i=0; i<widget.orderDetail.length; i++){
+                                              if(product == widget.orderDetail[i].product){
+                                                widget.orderDetail[i].qty = qty;
+                                                widget.orderDetail[i].notes = notes;
+                                                indexExist = i;
+                                              }
+                                            }
+
+                                            if(qty==0){
+                                              widget.orderDetail.removeAt(indexExist);
+                                            }
+                                            setState(() {});
+                                          }
+                                      }
+                                    );
+                                  },
+                                  child: Container(
+                                    padding: const EdgeInsets.all(10),
+                                    color: Colors.white,
+                                    child: Row(
+                                      children: <Widget>[
+                                        SizedBox(
+                                          height: 50,
+                                          width: 50,
+                                          child: Container(
+                                            color: Colors.orange,
+                                            child: Center(
+                                              child: Text(
+                                                Global.delimeter(
+                                                    number: widget.orderDetail[index].qty.toString()),
+                                                style:
+                                                    TextStyle(fontSize: 20, color: Colors.white),
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                        SizedBox(
+                                          width: 10,
+                                        ),
+                                        Expanded(
+                                          flex: 5,
+                                          child: Column(
+                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                            children: <Widget>[
+                                              Text(widget.orderDetail[index].name,
+                                                  style: TextStyle(fontSize: 14)),
+                                              Text(
+                                                  "Harga: Rp. " +
+                                                      Global.delimeter(
+                                                          number: widget.orderDetail[index].price.toString()),
+                                                  style: TextStyle(
+                                                      fontSize: 12, fontStyle: FontStyle.italic)),
+                                              
+                                              if(widget.orderDetail[index].notes != null) ...[  
+                                                Text(
+                                                  widget.orderDetail[index].notes,
+                                                  style: TextStyle(fontSize: 12, fontStyle: FontStyle.italic))
+                                              ]
+                                            ],
+                                          ),
+                                        )
+                                      ],
+                                    ),
                                   ),
-                                ),
-                              ),
-                            ],
-                          ),
+                                );
+                              }),
                         ],
                       ),
                     )
@@ -461,9 +527,10 @@ class _ContentOrderState extends State<ContentOrder> {
             customerAddress: _alamatController.text,
             customerPhone: _telpController.text,
             description: _descController.text,
-            description2: _descController2.text));
+            orderDetail: widget.orderDetail));
         if (response.success) {
           Global.materialNavigateReplace(context, ContentOrderHistory());
+          Dialogs.hideDialog(context: context);
           Dialogs.hideDialog(context: context);
         } else
           Dialogs.showSimpleText(context: context, text: response.message);
@@ -477,8 +544,9 @@ class _ContentOrderState extends State<ContentOrder> {
             customerAddress: _alamatController.text,
             customerPhone: _telpController.text,
             description: _descController.text,
-            description2: _descController2.text));
+            orderDetail: widget.orderDetail));
         if (response.success) {
+          Dialogs.hideDialog(context: context);
           Dialogs.hideDialog(context: context);
         } else
           Dialogs.showSimpleText(context: context, text: response.message);
