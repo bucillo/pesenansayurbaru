@@ -27,6 +27,7 @@ class ContentOrder extends StatefulWidget {
 class _ContentOrderState extends State<ContentOrder> {
   var _isVisible;
   bool _loading = false;
+  double total = 0;
   List<Customer> _customerFull = [];
   List<Customer> _customer = [];
   DateTime date = DateTime(
@@ -61,6 +62,11 @@ class _ContentOrderState extends State<ContentOrder> {
 
       setState(() {});
     }
+
+    widget.orderDetail.forEach((data) {
+      total += data.qty * data.price;
+     });
+
     super.initState();
   }
 
@@ -388,12 +394,8 @@ class _ContentOrderState extends State<ContentOrder> {
                                             children: <Widget>[
                                               Text(widget.orderDetail[index].name,
                                                   style: TextStyle(fontSize: 14)),
-                                              Text(
-                                                  "Harga: Rp. " +
-                                                      Global.delimeter(
-                                                          number: widget.orderDetail[index].price.toString()),
-                                                  style: TextStyle(
-                                                      fontSize: 12, fontStyle: FontStyle.italic)),
+                                              Text("Harga: Rp. " + Global.delimeter(number: widget.orderDetail[index].price.toString()), style: TextStyle(fontSize: 12, fontStyle: FontStyle.italic)),
+                                              Text("Subtotal: Rp. " + Global.delimeter(number: (widget.orderDetail[index].price * widget.orderDetail[index].qty).toString()), style: TextStyle(fontSize: 12, fontStyle: FontStyle.italic)),
                                               
                                               if(widget.orderDetail[index].notes != null) ...[  
                                                 Text(
@@ -408,6 +410,22 @@ class _ContentOrderState extends State<ContentOrder> {
                                   ),
                                 );
                               }),
+                          
+                          SizedBox(height: 5),
+                          Row(
+                            mainAxisSize: MainAxisSize.max,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              Expanded(
+                                child: Text(
+                                  "Total: Rp. " + Global.delimeter(number: total.toString()),
+                                  textAlign: TextAlign.end,
+                                  style: TextStyle(fontWeight: FontWeight.bold),
+                                )
+                              )
+                            ],
+                          ),
                         ],
                       ),
                     )

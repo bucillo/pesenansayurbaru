@@ -19,6 +19,8 @@ class ContentTicket extends StatefulWidget {
 class _ContentTicketState extends State<ContentTicket> {
   int totalTransaction = 0;
   List<Ticket> _ticket = [];
+  List<Ticket> _ticketFull = [];
+  String _pilih;
 
   @override
   void initState() {
@@ -53,30 +55,68 @@ class _ContentTicketState extends State<ContentTicket> {
       body: SafeArea(
           child: Column(
             children: [
-              if (Global.getShared(key: Prefs.PREFS_USER_TYPE) == "3")...[
-                Align(
-                  alignment: Alignment.centerRight,
-                  child: Container(
-                    margin: EdgeInsets.only(right: 10, bottom: 5),
-                    decoration: BoxDecoration(
-                      color: Constants.darkAccent,
-                      borderRadius: BorderRadius.horizontal(
-                        left: Radius.circular(15),
-                        right: Radius.circular(15),
+              Row(
+                children: [
+                  Expanded(
+                    child: Container(
+                        margin: const EdgeInsets.symmetric(horizontal: 10),
+                        child:
+                            DropdownButton<String>(
+                              isExpanded: true,
+                              value: _pilih,
+                              style: TextStyle(color: Colors.black),
+                              items: <String>[
+                                'SEMUA',
+                                'BELUM SELESAI',
+                                'SELESAI'
+                              ].map<DropdownMenuItem<String>>((String value) {
+                                return DropdownMenuItem<String>(
+                                  value: value,
+                                  child: Text(value),
+                                );
+                              }).toList(),
+                              hint: Text(
+                                "Silahkan Pilih Status",
+                                style: TextStyle(
+                                    color: Colors.black,
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w600),
+                              ),
+                              onChanged: (String value) {
+                                setState(() {
+                                  _pilih = value;
+                                });
+                                _filter();
+                              },
+                            )),
+                  ),
+                  if (Global.getShared(key: Prefs.PREFS_USER_TYPE) == "3")...[
+                    Align(
+                      alignment: Alignment.centerRight,
+                      child: Container(
+                        margin: EdgeInsets.only(right: 10, bottom: 5),
+                        decoration: BoxDecoration(
+                          color: Constants.darkAccent,
+                          borderRadius: BorderRadius.horizontal(
+                            left: Radius.circular(15),
+                            right: Radius.circular(15),
+                          ),
+                        ),
+                        child: IconButton(
+                            icon: Icon(Icons.add, color: Colors.white, size: 20),
+                            onPressed: () {
+                              TicketDialog.show(context: context, action: (result, title, text){
+                                if(result){
+                                  create(title, text);
+                                }
+                              });
+                            }),
                       ),
                     ),
-                    child: IconButton(
-                        icon: Icon(Icons.add, color: Colors.white, size: 20),
-                        onPressed: () {
-                          TicketDialog.show(context: context, action: (result, title, text){
-                            if(result){
-                              create(title, text);
-                            }
-                          });
-                        }),
-                  ),
-                ),
-              ],
+                  ],
+                ],
+              ),
+              
               if (_ticket.length > 0) ...[
                 ListView.builder(
                   physics: AlwaysScrollableScrollPhysics(),
@@ -147,14 +187,40 @@ class _ContentTicketState extends State<ContentTicket> {
     );
   }
 
+  void _filter() {
+    _ticket = [];
+
+    for(int i=0; i<_ticketFull.length; i++){
+      bool canAdd = true;
+      String _pilihConvert = "";
+      
+      if (_pilih == "" || _pilih == null) _pilihConvert = "";
+      if (_pilih == "SEMUA") _pilihConvert = "";
+      if (_pilih == "BELUM SELESAI") _pilihConvert = "0";
+      if (_pilih == "SELESAI") _pilihConvert = "1";
+
+      if(_pilihConvert!=""){
+        if(_pilihConvert != _ticketFull[i].status) canAdd = false;
+      }
+
+      if(canAdd){
+        _ticket.add(_ticketFull[i]);
+        totalTransaction++;
+      }
+    }
+    setState(() {});
+  }
+
   Future<void> select() async {
     _ticket = [];
+    _ticketFull = [];
     if (Global.getShared(key: Prefs.PREFS_USER_TYPE) == "2"){
       final response = API.fromJson(await Ticket.select(context: context));
       if (response.success) {
         response.data.forEach((data) {
           Ticket ticket = Ticket.fromJson(data);
           _ticket.add(ticket);
+          _ticketFull.add(ticket);
         });
       }
     }
@@ -164,11 +230,12 @@ class _ContentTicketState extends State<ContentTicket> {
         response.data.forEach((data) {
           Ticket ticket = Ticket.fromJson(data);
           _ticket.add(ticket);
+          _ticketFull.add(ticket);
         });
       }
     }
 
-    setState(() {});
+    _filter();
   }
 
   Future<void> create(String title, String text) async {

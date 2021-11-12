@@ -3,6 +3,7 @@ import 'package:PesenSayur/dialogs/ticket.dart';
 import 'package:PesenSayur/models/api.dart';
 import 'package:PesenSayur/models/ticket.dart';
 import 'package:PesenSayur/models/ticket_detail.dart';
+import 'package:PesenSayur/util/dialog.dart';
 import 'package:PesenSayur/util/global.dart';
 import 'package:flutter/material.dart';
 import 'package:PesenSayur/util/const.dart';
@@ -56,6 +57,30 @@ class _ContentTicketDetailState extends State<ContentTicketDetail> {
       body: SafeArea(
           child: Column(
             children: [
+              Container(
+                margin: EdgeInsets.only(right: 10, left: 10, bottom: 5),
+                decoration: BoxDecoration(
+                  color: Constants.darkAccent,
+                  borderRadius: BorderRadius.horizontal(
+                    left: Radius.circular(15),
+                    right: Radius.circular(15),
+                  ),
+                ),
+                child: InkWell(
+                  onTap: (){
+                    Dialogs.showYesNo(context: context, text: "Apakah yakin untuk menyelesaikan ticket?", action: (result){
+                      if(result){
+                        close();
+                      }
+                    });
+                  },
+                  child: Container(
+                    padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                    width: double.infinity,
+                    child: Text("SELESAIKAN", textAlign: TextAlign.center, style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),)
+                  ),
+                )
+              ),
               if (_ticketDetail.length > 0) ...[
                 Expanded(
                   child: ListView.builder(
@@ -203,6 +228,13 @@ class _ContentTicketDetailState extends State<ContentTicketDetail> {
     if (response.success) {
       _text.text = "";
       select();
+    }
+  }
+
+  Future<void> close() async {
+    final response = API.fromJson(await Ticket.close(context: context, ticket: widget.ticket.id));
+    if (response.success) {
+      Dialogs.hideDialog(context: context);
     }
   }
 }

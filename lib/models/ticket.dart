@@ -80,4 +80,23 @@ class Ticket {
 
     return response;
   }
+
+  static Future<Map> close(
+      {@required BuildContext context, String ticket, bool showLoading = true}) async {
+    Map _parameter = {
+      "token": Global.getShared(key: Prefs.PREFS_USER_TOKEN),
+      "hash": Global.getShared(key: Prefs.PREFS_USER_HASH),
+      "ticket_id": ticket
+    };
+
+    print("PRAMETER :: " + _parameter.toString());
+
+    final response = await Global.postTimeout(
+        context: context,
+        url: "Transaksi_Ticket/closeTicket",
+        data: _parameter,
+        withLoading: showLoading);
+
+    return response;
+  }
 }

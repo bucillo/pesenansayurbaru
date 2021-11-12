@@ -25,6 +25,7 @@ class _ContentOrderCartState extends State<ContentOrderCart> {
   TextEditingController _searchController = new TextEditingController();
   List<Product> _productFull = [];
   List<Product> _product = [];
+  bool showOnlyCart = false;
 
   @override
   void initState() {
@@ -81,6 +82,22 @@ class _ContentOrderCartState extends State<ContentOrderCart> {
                           ),
                         )
                       ),
+                      Container(
+                        margin: EdgeInsets.only(left: 10, right: 5),
+                        decoration: BoxDecoration(
+                          color: Constants.darkAccent,
+                          borderRadius: BorderRadius.horizontal(
+                            left: Radius.circular(15),
+                            right: Radius.circular(15),
+                          ),
+                        ),
+                        child: IconButton(
+                            icon:
+                                Icon((showOnlyCart) ? Icons.shopping_bag : Icons.shopping_bag_outlined, color: Colors.white, size: 20),
+                            onPressed: () {
+                              onlyCart();
+                            }),
+                      )
                     ],
                   ),
                 ),
@@ -286,6 +303,22 @@ class _ContentOrderCartState extends State<ContentOrderCart> {
     _productFull.forEach((data) {
       if(Global.contains(textData: data.name, textSearch: _searchController.text))
       _product.add(data);
+    });
+    setState(() {});
+  }
+
+  void onlyCart() {
+    showOnlyCart = !showOnlyCart;
+    _product = [];
+    _productFull.forEach((data) {
+      if(!showOnlyCart) _product.add(data);
+      else{
+        for(int i=0; i<widget.orderDetail.length; i++){
+          if(data.id == widget.orderDetail[i].product){
+            _product.add(data);
+          }
+        }
+      }
     });
     setState(() {});
   }

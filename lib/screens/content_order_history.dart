@@ -500,6 +500,7 @@ class _ContentOrderHistoryState extends State<ContentOrderHistory> {
                 itemCount: _order.length,
                 itemBuilder: (context, index) {
                   String detail = "";
+                  double total = 0;
                   List<OrderDetail> detailList = [];
                   List<dynamic> temp = List<dynamic>.from(_order[index].detail as List);
 
@@ -532,8 +533,12 @@ class _ContentOrderHistoryState extends State<ContentOrderHistory> {
                   temp.forEach((data) {
                     OrderDetail orderDetail = new OrderDetail.fromJson(data);
                     detailList.add(orderDetail);
-                    detail += "\n" + Global.delimeter(number: orderDetail.qty.toString()) + "x " + orderDetail.name;
+                    double subtotal = orderDetail.qty * orderDetail.price;
+                    total += subtotal;
+                    detail += "\n" + Global.delimeter(number: orderDetail.qty.toString()) + " x " + orderDetail.name + " (Rp. " + Global.delimeter(number: subtotal.toString()) + ")";
                   });
+
+                  detail += "\n\nTotal: Rp. " + Global.delimeter(number: total.toString()); 
 
                   return Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 5),
