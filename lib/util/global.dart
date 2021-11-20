@@ -186,6 +186,7 @@ class Global {
   static const DATETIME_SHOW_DETAIL = "dd MMMM yyyy, HH:mm";
   static const DATETIME_SHOW_DATE = "dd MMMM yyyy";
   static const DATETIME_SHOW_DATE_SHORT = "dd MMM yyyy";
+  static const DATETIME_SHOW_DATE_SHORT_DETAIL = "dd MMM yyyy, HH:mm";
   static const DATETIME_SHOW_TIME = "HH:mm";
   static const DATETIME_HOUR = "HH";
   static const DATETIME_MINUTE = "mm";

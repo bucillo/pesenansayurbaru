@@ -155,7 +155,13 @@ class _ContentTicketState extends State<ContentTicket> {
                                     ],
                                     Row(
                                       children: [
-                                        Expanded(child: Text(Global.formatDate(date: _ticket[index].date, outputPattern: Global.DATETIME_SHOW_DATE))),
+                                        Expanded(
+                                          child: Text(
+                                            (_ticket[index].dateEnd == "")
+                                            ? Global.formatDate(date: _ticket[index].date, outputPattern: Global.DATETIME_SHOW_DATE_SHORT_DETAIL)
+                                            : Global.formatDate(date: _ticket[index].date, outputPattern: Global.DATETIME_SHOW_DATE_SHORT_DETAIL) + " - " + Global.formatDate(date: _ticket[index].dateEnd, outputPattern: Global.DATETIME_SHOW_DATE_SHORT_DETAIL)
+                                          )
+                                        ),
                                       ],
                                     ),
                                   ],

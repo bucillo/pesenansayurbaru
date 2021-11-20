@@ -5,6 +5,7 @@ class Ticket {
   final String id;
   final String title;
   final String date;
+  final String dateEnd;
   final String status;
   final String customer;
 
@@ -12,6 +13,7 @@ class Ticket {
       : id = json["ticket_id"],
         title = json["title"],
         date = json["date"],
+        dateEnd = json["date_end"],
         customer = json["customer"],
         status = json["close"];
   
@@ -20,7 +22,8 @@ class Ticket {
         'title': this.title,
         'close': this.status,
         'customer': this.customer,
-        'date': this.date
+        'date': this.date,
+        'date_end': this.dateEnd
       };
 
   static Future<Map> select(
