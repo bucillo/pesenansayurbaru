@@ -57,30 +57,32 @@ class _ContentTicketDetailState extends State<ContentTicketDetail> {
       body: SafeArea(
           child: Column(
             children: [
-              Container(
-                margin: EdgeInsets.only(right: 10, left: 10, bottom: 5),
-                decoration: BoxDecoration(
-                  color: Constants.darkAccent,
-                  borderRadius: BorderRadius.horizontal(
-                    left: Radius.circular(15),
-                    right: Radius.circular(15),
+              if(widget.ticket.status == "0") ...[
+                Container(
+                  margin: EdgeInsets.only(right: 10, left: 10, bottom: 5),
+                  decoration: BoxDecoration(
+                    color: Constants.darkAccent,
+                    borderRadius: BorderRadius.horizontal(
+                      left: Radius.circular(15),
+                      right: Radius.circular(15),
+                    ),
                   ),
-                ),
-                child: InkWell(
-                  onTap: (){
-                    Dialogs.showYesNo(context: context, text: "Apakah yakin untuk menyelesaikan ticket?", action: (result){
-                      if(result){
-                        close();
-                      }
-                    });
-                  },
-                  child: Container(
-                    padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-                    width: double.infinity,
-                    child: Text("SELESAIKAN", textAlign: TextAlign.center, style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),)
-                  ),
+                  child: InkWell(
+                    onTap: (){
+                      Dialogs.showYesNo(context: context, text: "Apakah yakin untuk menyelesaikan ticket?", action: (result){
+                        if(result){
+                          close();
+                        }
+                      });
+                    },
+                    child: Container(
+                      padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                      width: double.infinity,
+                      child: Text("SELESAIKAN", textAlign: TextAlign.center, style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),)
+                    ),
+                  )
                 )
-              ),
+              ],
               if (_ticketDetail.length > 0) ...[
                 Expanded(
                   child: ListView.builder(
