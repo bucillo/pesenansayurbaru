@@ -793,6 +793,7 @@ class _ContentOrderHistoryState extends State<ContentOrderHistory> {
   Future<void> checkUnread() async {
     _unread = 0;
 
+    print(Global.getShared(key: Prefs.PREFS_USER_TYPE));
     if (Global.getShared(key: Prefs.PREFS_USER_TYPE) == "2"){
       final response = API.fromJson(await Ticket.countUnread(
           context: context,

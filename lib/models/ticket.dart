@@ -97,7 +97,7 @@ class Ticket {
 
     final response = await Global.postTimeout(
         context: context,
-        url: "Transaksi_Ticket/countUnread",
+        url: "Transaksi_Ticket/countUnreadReseller",
         data: _parameter,
         withLoading: showLoading);
 
