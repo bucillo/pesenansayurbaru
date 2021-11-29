@@ -82,8 +82,7 @@ class Global {
 
       print("API :: " + API_URL + url + _parameterUrl);
       if (withLoading) Dialogs.showLoading(context: context);
-      final response =
-          await http.get(API_URL + url + _parameterUrl).timeout(timeout);
+      final response = await http.get(Uri.parse(API_URL + url + _parameterUrl)).timeout(timeout);
       print("RESPONSE :: " + response.body);
 
       final result = json.decode(response.body);
@@ -114,7 +113,7 @@ class Global {
 
       if (withLoading) Dialogs.showLoading(context: context);
       final response = await http
-          .post(API_URL + url,
+          .post(Uri.parse(API_URL + url),
               headers: {'Content-Type': 'application/json'},
               body: json.encode(data))
           .timeout(timeout);

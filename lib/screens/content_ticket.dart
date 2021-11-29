@@ -118,64 +118,82 @@ class _ContentTicketState extends State<ContentTicket> {
               ),
               
               if (_ticket.length > 0) ...[
-                ListView.builder(
-                  physics: AlwaysScrollableScrollPhysics(),
-                  shrinkWrap: true,
-                  itemCount: _ticket.length,
-                  itemBuilder: (context, index) {
-                    return Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 5),
-                      child: Card(
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10.0),
-                        ),
-                        child: ListTile(
-                          onTap: () {
-                            Global.materialNavigate(context, ContentTicketDetail(ticket: _ticket[index]))
-                            .then((value) => select());
-                          },
-                          title: Text(
-                            _ticket[index].title,
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold
-                            ),
+                Expanded(
+                  child: ListView.builder(
+                    physics: AlwaysScrollableScrollPhysics(),
+                    shrinkWrap: true,
+                    itemCount: _ticket.length,
+                    itemBuilder: (context, index) {
+                      return Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 5),
+                        child: Card(
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10.0),
                           ),
-                          subtitle: Row(
-                            children: [
-                              Expanded(
-                                child: Column(
-                                  children: [
-                                    if (Global.getShared(key: Prefs.PREFS_USER_TYPE) == "2")...[
-                                      SizedBox(height: 5),
+                          child: ListTile(
+                            onTap: () {
+                              Global.materialNavigate(context, ContentTicketDetail(ticket: _ticket[index]))
+                              .then((value) => select());
+                            },
+                            title: Text(
+                              _ticket[index].title,
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold
+                              ),
+                            ),
+                            subtitle: Row(
+                              children: [
+                                Expanded(
+                                  child: Column(
+                                    children: [
+                                      if (Global.getShared(key: Prefs.PREFS_USER_TYPE) == "2")...[
+                                        SizedBox(height: 5),
+                                        Row(
+                                          children: [
+                                            Expanded(child: Text(_ticket[index].customer)),
+                                          ],
+                                        ),
+                                      ],
                                       Row(
                                         children: [
-                                          Expanded(child: Text(_ticket[index].customer)),
+                                          Expanded(
+                                            child: Text(
+                                              (_ticket[index].dateEnd == "")
+                                              ? Global.formatDate(date: _ticket[index].date, outputPattern: Global.DATETIME_SHOW_DATE_SHORT_DETAIL)
+                                              : Global.formatDate(date: _ticket[index].date, outputPattern: Global.DATETIME_SHOW_DATE_SHORT_DETAIL) + " - " + Global.formatDate(date: _ticket[index].dateEnd, outputPattern: Global.DATETIME_SHOW_DATE_SHORT_DETAIL)
+                                            )
+                                          ),
                                         ],
                                       ),
                                     ],
-                                    Row(
-                                      children: [
-                                        Expanded(
-                                          child: Text(
-                                            (_ticket[index].dateEnd == "")
-                                            ? Global.formatDate(date: _ticket[index].date, outputPattern: Global.DATETIME_SHOW_DATE_SHORT_DETAIL)
-                                            : Global.formatDate(date: _ticket[index].date, outputPattern: Global.DATETIME_SHOW_DATE_SHORT_DETAIL) + " - " + Global.formatDate(date: _ticket[index].dateEnd, outputPattern: Global.DATETIME_SHOW_DATE_SHORT_DETAIL)
-                                          )
-                                        ),
-                                      ],
-                                    ),
-                                  ],
+                                  ),
                                 ),
-                              ),
-                              if(_ticket[index].status == "1") ...[
-                                Icon(Icons.check, color: Colors.green)
-                              ]
-                            ],
+                                if(_ticket[index].status == "1") ...[
+                                  Icon(Icons.check, color: Colors.green)
+                                ]
+                                else ...[
+                                  if(int.parse(_ticket[index].unread)  > 0) ...[
+                                    Container(
+                                      margin: EdgeInsets.only(right: 10, bottom: 5),
+                                      padding: EdgeInsets.all(5),
+                                      decoration: BoxDecoration(
+                                        color: Colors.red,
+                                        borderRadius: BorderRadius.horizontal(
+                                          left: Radius.circular(15),
+                                          right: Radius.circular(15),
+                                        ),
+                                      ),
+                                      child: Text(_ticket[index].unread, style: TextStyle(color: Colors.white))
+                                    ),
+                                  ]
+                                ]
+                              ],
+                            ),
                           ),
                         ),
-                      ),
-                    );
-                  },
+                      );
+                    },
+                  ),
                 ),
               ] 
               else ...[

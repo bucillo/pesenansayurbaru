@@ -1,9 +1,11 @@
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:PesenSayur/models/api.dart';
 import 'package:PesenSayur/models/customer.dart';
 import 'package:PesenSayur/models/order.dart';
 import 'package:PesenSayur/models/order_detail.dart';
+import 'package:PesenSayur/models/ticket.dart';
 import 'package:PesenSayur/screens/content_image_url.dart';
 import 'package:PesenSayur/screens/content_order.dart';
 import 'package:PesenSayur/screens/content_order_cart.dart';
@@ -12,6 +14,8 @@ import 'package:PesenSayur/screens/content_order_send.dart';
 import 'package:PesenSayur/screens/content_ticket.dart';
 import 'package:PesenSayur/util/dialog.dart';
 import 'package:PesenSayur/util/global.dart';
+import 'package:audioplayers/audio_cache.dart';
+import 'package:audioplayers/audioplayers.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:PesenSayur/util/const.dart';
@@ -40,6 +44,9 @@ class _ContentOrderHistoryState extends State<ContentOrderHistory> {
   DateTime dateEnd = DateTime.now();
   String _pilih;
   String _cutomerSelected;
+  int _unread = 0;
+
+  Timer timer;
 
   @override
   void initState() {
@@ -50,12 +57,15 @@ class _ContentOrderHistoryState extends State<ContentOrderHistory> {
     dateEnd = new DateTime(dateEnd.year, dateEnd.month, dateEnd.day);
     Future.delayed(Duration.zero, () async {
       select();
+      checkUnread();
+      timer = Timer.periodic(Duration(seconds: 30), (Timer t) => checkUnread());
     });
   }
 
   @override
   void dispose() {
     super.dispose();
+    timer.cancel();
   }
 
   @override
@@ -298,12 +308,22 @@ class _ContentOrderHistoryState extends State<ContentOrderHistory> {
                               right: Radius.circular(15),
                             ),
                           ),
-                          child: IconButton(
-                              icon: Icon(Icons.message, color: Colors.white, size: 20),
-                              onPressed: () {
-                                Global.materialNavigate(context, ContentTicket())
-                                    .then((value) => select());
-                              }),
+                          child: Row(
+                            children: [
+                              if(_unread > 0) ...[
+                                Container(
+                                  margin: EdgeInsets.only(left: 10),
+                                  child: Text(_unread.toString(), style: TextStyle(color: Colors.white)),
+                                ),
+                              ],
+                              IconButton(
+                                  icon: Icon(Icons.message, color: Colors.white, size: 20),
+                                  onPressed: () {
+                                    Global.materialNavigate(context, ContentTicket())
+                                        .then((value) => select());
+                                  }),
+                            ],
+                          ),
                         ),
                         if (Global.getShared(key: Prefs.PREFS_USER_TYPE) == "3") ...[
                           Container(
@@ -763,6 +783,41 @@ class _ContentOrderHistoryState extends State<ContentOrderHistory> {
         ],
       )),
     );
+  }
+
+  Future<AudioPlayer> playLocalAsset() async {
+      AudioCache cache = new AudioCache();
+      return await cache.play("siren.mp3"); 
+  }
+
+  Future<void> checkUnread() async {
+    _unread = 0;
+
+    if (Global.getShared(key: Prefs.PREFS_USER_TYPE) == "2"){
+      final response = API.fromJson(await Ticket.countUnread(
+          context: context,
+          showLoading: false));
+      if (response.success) {
+        response.data.forEach((data) {
+          Ticket ticket = Ticket.fromJson(data);
+          _unread = int.parse(ticket.unread);
+        });
+      }
+    }
+    else if (Global.getShared(key: Prefs.PREFS_USER_TYPE) == "3"){
+      final response = API.fromJson(await Ticket.countUnreadReseller(
+          context: context,
+          showLoading: false));
+      if (response.success) {
+        response.data.forEach((data) {
+          Ticket ticket = Ticket.fromJson(data);
+          _unread = int.parse(ticket.unread);
+        });
+      }
+    }
+    
+    if(_unread > 0) playLocalAsset();
+    setState(() {});
   }
 
   Future<void> select() async {

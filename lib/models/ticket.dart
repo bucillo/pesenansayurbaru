@@ -8,6 +8,7 @@ class Ticket {
   final String dateEnd;
   final String status;
   final String customer;
+  final String unread;
 
   Ticket.fromJson(Map<String, dynamic> json)
       : id = json["ticket_id"],
@@ -15,7 +16,8 @@ class Ticket {
         date = json["date"],
         dateEnd = json["date_end"],
         customer = json["customer"],
-        status = json["close"];
+        status = json["close"],
+        unread = json["unread"];
   
   Map<String, dynamic> toJson() => <String, dynamic>{
         'ticket_id': this.id,
@@ -23,7 +25,8 @@ class Ticket {
         'close': this.status,
         'customer': this.customer,
         'date': this.date,
-        'date_end': this.dateEnd
+        'date_end': this.dateEnd,
+        'unread': this.unread
       };
 
   static Future<Map> select(
@@ -57,6 +60,44 @@ class Ticket {
     final response = await Global.postTimeout(
         context: context,
         url: "Transaksi_Ticket/selectTicketReseller",
+        data: _parameter,
+        withLoading: showLoading);
+
+    return response;
+  }
+
+
+  static Future<Map> countUnread(
+      {@required BuildContext context, bool showLoading = true}) async {
+    Map _parameter = {
+      "token": Global.getShared(key: Prefs.PREFS_USER_TOKEN),
+      "hash": Global.getShared(key: Prefs.PREFS_USER_HASH)
+    };
+
+    print("PRAMETER :: " + _parameter.toString());
+
+    final response = await Global.postTimeout(
+        context: context,
+        url: "Transaksi_Ticket/countUnread",
+        data: _parameter,
+        withLoading: showLoading);
+
+    return response;
+  }
+
+
+  static Future<Map> countUnreadReseller(
+      {@required BuildContext context, bool showLoading = true}) async {
+    Map _parameter = {
+      "token": Global.getShared(key: Prefs.PREFS_USER_TOKEN),
+      "hash": Global.getShared(key: Prefs.PREFS_USER_HASH)
+    };
+
+    print("PRAMETER :: " + _parameter.toString());
+
+    final response = await Global.postTimeout(
+        context: context,
+        url: "Transaksi_Ticket/countUnread",
         data: _parameter,
         withLoading: showLoading);
 
