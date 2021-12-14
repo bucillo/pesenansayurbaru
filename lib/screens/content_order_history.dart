@@ -48,6 +48,7 @@ class _ContentOrderHistoryState extends State<ContentOrderHistory> {
   String _cutomerSelected;
   String _pilihArea;
   int _unread = 0;
+  bool showMap = false;
 
   Timer timer;
 
@@ -460,110 +461,46 @@ class _ContentOrderHistoryState extends State<ContentOrderHistory> {
                                                 text: "Print Gagal");
                                         });
                                   }),
-                            )
-                          ]
+                            ),
+
+
+                            Container(
+                              margin: EdgeInsets.only(left: 10),
+                              decoration: BoxDecoration(
+                                color: Constants.darkAccent,
+                                borderRadius: BorderRadius.horizontal(
+                                  left: Radius.circular(15),
+                                  right: Radius.circular(15),
+                                ),
+                              ),
+                              child: IconButton(
+                                  icon: Icon(Icons.map,
+                                      color: Colors.white, size: 20),
+                                  onPressed: () async {
+                                    setState(() {
+                                      showMap = !showMap;
+                                    });
+                                  }),
+                            ),
+                          ],
                         ]
                       ],
                     ),
                   )
                 ),
-                // if (Global.getShared(key: Prefs.PREFS_USER_TYPE) == "3") ...[
-                //   Expanded(
-                //     child: Align(
-                //       alignment: Alignment.centerRight,
-                //       child: Container(
-                //         margin: EdgeInsets.only(left: 10),
-                //         decoration: BoxDecoration(
-                //           color: Constants.darkAccent,
-                //           borderRadius: BorderRadius.horizontal(
-                //             left: Radius.circular(15),
-                //             right: Radius.circular(15),
-                //           ),
-                //         ),
-                //         child: IconButton(
-                //             icon:
-                //                 Icon(Icons.add, color: Colors.white, size: 20),
-                //             onPressed: () {
-                //               Global.materialNavigate(
-                //                       context, ContentOrderCart(datetime: dateEnd, orderDetail: []))
-                //                   .then((value) => select());
-                //             }),
-                //       ),
-                //     ),
-                //   )
-                // ] else ...[
-                //   if (_order.length > 0) ...[
-                //     Expanded(
-                //       child: Align(
-                //         alignment: Alignment.centerRight,
-                //         child: Container(
-                //           margin: EdgeInsets.only(left: 10),
-                //           decoration: BoxDecoration(
-                //             color: Constants.darkAccent,
-                //             borderRadius: BorderRadius.horizontal(
-                //               left: Radius.circular(15),
-                //               right: Radius.circular(15),
-                //             ),
-                //           ),
-                //           child: IconButton(
-                //               icon: Icon(Icons.print,
-                //                   color: Colors.white, size: 20),
-                //               onPressed: () async {
-                //                 List<Order> order = [];
-                //                 Dialogs.showPrintCategory(
-                //                     context: context,
-                //                     action: (result) async {
-                //                       Dialogs.hideDialog(context: context);
-                //                       for (int i = 0; i < _order.length; i++) {
-                //                         if (_order[i].active == "1") {
-                //                           if (result == 0) {
-                //                             if (_order[i].statusConfirm == "0")
-                //                               order.add(_order[i]);
-                //                           } else if (result == 2) {
-                //                             if (_order[i].statusConfirm == "2")
-                //                               order.add(_order[i]);
-                //                           } else if (result == 3) {
-                //                             if (_order[i].statusConfirm == "2")
-                //                               order.add(_order[i]);
-                //                           } else
-                //                             order.add(_order[i]);
-                //                         }
-                //                       }
-
-                //                       bool printSuccess = await Printing()
-                //                           .printReseller(context, order);
-
-                //                       if (printSuccess) {
-                //                         for (int i = 0;
-                //                             i < _order.length;
-                //                             i++) {
-                //                           if (_order[i].active == "1") {
-                //                             if (result == -1 || result == 0) {
-                //                               if (_order[i].statusConfirm ==
-                //                                   "0") {
-                //                                 final response = API.fromJson(
-                //                                     await Order.print(
-                //                                         context: context,
-                //                                         code: _order[i].id));
-                //                               }
-                //                             }
-                //                           }
-                //                         }
-                //                         select();
-                //                       } else
-                //                         Dialogs.showSimpleText(
-                //                             context: context,
-                //                             text: "Print Gagal");
-                //                     });
-                //               }),
-                //         ),
-                //       ),
-                //     )
-                //   ]
-                // ]
               ],
             ),
           ),
+          if(_order.length > 0) ...[
+            if(showMap) ...[
+              SizedBox(height: 10),
+              Image.asset(
+                'assets/map.jpeg',
+                width: 200,
+              ),
+              SizedBox(height: 10)
+            ]
+          ],
           if (_order.length > 0) ...[
             Expanded(
               child: ListView.builder(
