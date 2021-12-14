@@ -8,6 +8,7 @@ class Order {
   final String date;
   final String customerName;
   final String customerAddress;
+  final String customerArea;
   final String customerPhone;
   final String description;
   final String description2;
@@ -27,6 +28,7 @@ class Order {
       this.date,
       this.customerName,
       this.customerAddress,
+      this.customerArea,
       this.customerPhone,
       this.description,
       this.description2,
@@ -40,6 +42,7 @@ class Order {
         date = json["date"],
         customerName = json["customer_name"],
         customerAddress = json["customer_address"],
+        customerArea = json["customer_area"],
         customerPhone = json["customer_phone"],
         description = json["description"],
         description2 = json["description2"],
@@ -56,6 +59,7 @@ class Order {
         'date': this.date,
         'customer_': this.customerName,
         'customer_address': this.customerAddress,
+        'customer_area': this.customerArea,
         'customer_phone': this.customerPhone,
         'description': this.description,
         'description2': this.description2,
@@ -92,12 +96,50 @@ class Order {
     return response;
   }
 
+  static Future<Map> get(
+      {@required BuildContext context,
+      @required String id,
+      bool showLoading = true}) async {
+    Map _parameter = {
+      "token": Global.getShared(key: Prefs.PREFS_USER_TOKEN),
+      "hash": Global.getShared(key: Prefs.PREFS_USER_HASH),
+      "order_id": id,
+    };
+
+    final response = await Global.postTimeout(
+        context: context,
+        url: "Transaksi_Pembelian/selectDataReseller",
+        data: _parameter,
+        withLoading: showLoading);
+
+    return response;
+  }
+
+  static Future<Map> getNew(
+      {@required BuildContext context,
+      @required String id,
+      bool showLoading = true}) async {
+    Map _parameter = {
+      "token": Global.getShared(key: Prefs.PREFS_USER_TOKEN),
+      "hash": Global.getShared(key: Prefs.PREFS_USER_HASH),
+    };
+
+    final response = await Global.postTimeout(
+        context: context,
+        url: "Transaksi_Pembelian/selectDataNew",
+        data: _parameter,
+        withLoading: showLoading);
+
+    return response;
+  }
+
   static Future<Map> insert(
       {@required BuildContext context,
       @required String date,
       @required String description,
       @required String customerName,
       @required String customerAddress,
+      @required String customerArea,
       @required String customerPhone,
       @required List<OrderDetail> orderDetail,
       bool showLoading = true}) async {
@@ -109,6 +151,7 @@ class Order {
       "description": description,
       "customer_name": customerName,
       "customer_address": customerAddress,
+      "customer_area": customerArea,
       "customer_phone": customerPhone,
       "detail": orderDetail,
     };
@@ -199,11 +242,15 @@ class Order {
       {@required BuildContext context,
       @required String code,
       @required String attachment,
+      @required String lat,
+      @required String lon,
       bool showLoading = true}) async {
     Map _parameter = {
       "token": Global.getShared(key: Prefs.PREFS_USER_TOKEN),
       "hash": Global.getShared(key: Prefs.PREFS_USER_HASH),
       "code": code,
+      "lat": lat,
+      "lon": lon,
       "attachment": attachment
     };
 

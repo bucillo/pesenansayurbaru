@@ -7,13 +7,15 @@ class Customer {
   final String name;
   final String phone;
   final String address;
+  final String area;
 
   Customer.fromJson(Map<String, dynamic> json)
       : id = json["id"],
         code = json["code"],
         name = json["name"],
         phone = json["phone"],
-        address = json["address"];
+        address = json["address"],
+        area = json["area"];
 
   static Future<Map> select(
       {@required BuildContext context, bool showLoading = true}) async {

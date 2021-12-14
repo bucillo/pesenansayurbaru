@@ -153,6 +153,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.0.0+1"
+  flutter_local_notifications_platform_interface:
+    dependency: "direct main"
+    description:
+      name: flutter_local_notifications_platform_interface
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "2.0.0+1"
   flutter_plugin_android_lifecycle:
     dependency: transitive
     description:
@@ -177,6 +184,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "4.2.1"
+  geolocation:
+    dependency: "direct main"
+    description:
+      name: geolocation
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.1.2"
   http:
     dependency: "direct main"
     description:
@@ -413,6 +427,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.1.0"
+  streams_channel:
+    dependency: transitive
+    description:
+      name: streams_channel
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.3.0"
   string_scanner:
     dependency: transitive
     description:

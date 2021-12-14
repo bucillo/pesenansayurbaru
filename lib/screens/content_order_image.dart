@@ -8,6 +8,7 @@ import 'package:PesenSayur/util/global.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:geolocation/geolocation.dart';
 
 class ContentOrderImage extends StatefulWidget {
   final Order order;
@@ -19,10 +20,37 @@ class ContentOrderImage extends StatefulWidget {
 
 class _ContentOrderImageState extends State<ContentOrderImage> {
   File image;
+  String latitude = '0';
+  String longitude = '0';
 
   @override
   void initState() {
     super.initState();
+    _getCurrentLocation();
+  }
+
+  _getCurrentLocation() async {
+    print("ENABLE");
+
+    Geolocation.enableLocationServices().then((result) {
+      // Request location
+      print(result);
+    }).catchError((e) {
+      // Location Services Enablind Cancelled
+      print(e);
+    });
+
+    Geolocation.currentLocation(accuracy: LocationAccuracy.best)
+        .listen((result) {
+      if (result.isSuccessful) {
+        setState(() {
+          latitude = result.location.latitude.toString();
+          longitude = result.location.longitude.toString();
+        });
+        print("LAT: " + latitude);
+        print("LON: " + longitude);
+      }
+    });
   }
 
   @override
@@ -110,11 +138,11 @@ class _ContentOrderImageState extends State<ContentOrderImage> {
       final response = API.fromJson(await Order.setImage(
           context: context,
           code: widget.order.id,
+          lat: latitude,
+          lon: longitude,
           attachment: Global.base64Image(file: image)));
-      if (response.success) {
-        Dialogs.hideDialog(context: context);
-      } else
-        Dialogs.showSimpleText(context: context, text: response.message);
+      if (response.success) Dialogs.hideDialog(context: context);
+      else Dialogs.showSimpleText(context: context, text: response.message);
     }
   }
 

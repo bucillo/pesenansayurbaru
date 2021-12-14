@@ -12,7 +12,7 @@ class CustomerDialog {
   static void show(
       {@required BuildContext context,
       @required List<Customer> list,
-      @required void Function(String, String, String, String) action}) {
+      @required void Function(String, String, String, String, String) action}) {
     customer = list;
     customerFull = list;
 
@@ -44,7 +44,7 @@ class CustomerDialog {
                         textInputAction: TextInputAction.done,
                         onFieldSubmitted: (value) {
                           Dialogs.hideDialog(context: context);
-                          action(value, "", "", "");
+                          action(value, "", "", "", "");
                         },
                         decoration: InputDecoration(labelText: "Pelanggan"),
                         style: TextStyle(fontSize: 12),
@@ -66,7 +66,8 @@ class CustomerDialog {
                                         customer[index].name,
                                         customer[index].code,
                                         customer[index].phone,
-                                        customer[index].address);
+                                        customer[index].address,
+                                        customer[index].area);
                                   },
                                   child: ListTile(
                                     title: ((customer[index].code == "")
@@ -88,6 +89,9 @@ class CustomerDialog {
                                       children: [
                                         if (customer[index].address != "")
                                           Text(customer[index].address,
+                                              style: TextStyle(fontSize: 12)),
+                                        if (customer[index].area != "")
+                                          Text(customer[index].area,
                                               style: TextStyle(fontSize: 12)),
                                         if (customer[index].phone != "")
                                           Text(customer[index].phone,

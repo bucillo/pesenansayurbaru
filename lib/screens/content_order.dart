@@ -39,6 +39,7 @@ class _ContentOrderState extends State<ContentOrder> {
   TextEditingController _descController = new TextEditingController();
   String hour = "";
   String minute = "";
+  String _pilihArea;
 
   @override
   void initState() {
@@ -279,6 +280,47 @@ class _ContentOrderState extends State<ContentOrder> {
                             crossAxisAlignment: CrossAxisAlignment.center,
                             mainAxisAlignment: MainAxisAlignment.start,
                             children: [
+                              Expanded(
+                                child: Container(
+                                    margin: const EdgeInsets.symmetric(horizontal: 10),
+                                    child:
+                                        DropdownButton<String>(
+                                          isExpanded: true,
+                                          value: _pilihArea,
+                                          style: TextStyle(color: Colors.black),
+                                          items: <String>[
+                                            'Surabaya Pusat',
+                                            'Surabaya Utara',
+                                            'Surabaya Selatan',
+                                            'Surabaya Barat',
+                                            'Surabaya Timur',
+                                          ].map<DropdownMenuItem<String>>((String value) {
+                                            return DropdownMenuItem<String>(
+                                              value: value,
+                                              child: Text(value),
+                                            );
+                                          }).toList(),
+                                          hint: Text(
+                                            "Area",
+                                            style: TextStyle(
+                                                color: Colors.black,
+                                                fontSize: 16,
+                                                fontWeight: FontWeight.w600),
+                                          ),
+                                          onChanged: (String value) {
+                                            setState(() {
+                                              _pilihArea = value;
+                                            });
+                                          },
+                                        )),
+                              ),
+                            ],
+                          ),
+                          Row(
+                            mainAxisSize: MainAxisSize.max,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
                               Text("Alamat: "),
                               Flexible(
                                 child: TextFormField(
@@ -491,10 +533,12 @@ class _ContentOrderState extends State<ContentOrder> {
       CustomerDialog.show(
           context: context,
           list: _customerFull,
-          action: (name, code, phone, address) {
+          action: (name, code, phone, address, area) {
             _customerController.text = name;
             if (address != "") _alamatController.text = address;
             if (phone != "") _telpController.text = phone;
+            if (area != "") _pilihArea = area;
+            setState(() {});
           });
     } else
       Dialogs.showSimpleText(
@@ -530,6 +574,10 @@ class _ContentOrderState extends State<ContentOrder> {
       success = false;
       Dialogs.showSimpleText(
           context: context, text: "Telepon customer dibutuhkan");
+    } else if (_pilihArea == "" || _pilihArea == null) {
+      success = false;
+      Dialogs.showSimpleText(
+          context: context, text: "Area customer dibutuhkan");
     } else if (_descController.text == "") {
       success = false;
       Dialogs.showSimpleText(context: context, text: "Pesanan masih kosong");
@@ -543,6 +591,7 @@ class _ContentOrderState extends State<ContentOrder> {
             date: dateSend,
             customerName: _customerController.text,
             customerAddress: _alamatController.text,
+            customerArea: _pilihArea,
             customerPhone: _telpController.text,
             description: _descController.text,
             orderDetail: widget.orderDetail));

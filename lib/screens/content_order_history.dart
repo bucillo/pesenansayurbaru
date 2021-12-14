@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 
+// import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:PesenSayur/models/api.dart';
 import 'package:PesenSayur/models/customer.dart';
 import 'package:PesenSayur/models/order.dart';
@@ -9,6 +10,7 @@ import 'package:PesenSayur/models/ticket.dart';
 import 'package:PesenSayur/screens/content_image_url.dart';
 import 'package:PesenSayur/screens/content_order.dart';
 import 'package:PesenSayur/screens/content_order_cart.dart';
+import 'package:PesenSayur/screens/content_order_detail.dart';
 import 'package:PesenSayur/screens/content_order_image.dart';
 import 'package:PesenSayur/screens/content_order_send.dart';
 import 'package:PesenSayur/screens/content_ticket.dart';
@@ -44,6 +46,7 @@ class _ContentOrderHistoryState extends State<ContentOrderHistory> {
   DateTime dateEnd = DateTime.now();
   String _pilih;
   String _cutomerSelected;
+  String _pilihArea;
   int _unread = 0;
 
   Timer timer;
@@ -281,6 +284,47 @@ class _ContentOrderHistoryState extends State<ContentOrderHistory> {
               ],
             ),
           ],
+          Row(
+            children: [
+              Expanded(
+                child: Container(
+                    margin: const EdgeInsets.symmetric(horizontal: 10),
+                    child:
+                        DropdownButton<String>(
+                          isExpanded: true,
+                          value: _pilihArea,
+                          style: TextStyle(color: Colors.black),
+                          items: <String>[
+                            'SEMUA',
+                            'Surabaya Pusat',
+                            'Surabaya Utara',
+                            'Surabaya Selatan',
+                            'Surabaya Barat',
+                            'Surabaya Timur',
+                            'Lainnya',
+                          ].map<DropdownMenuItem<String>>((String value) {
+                            return DropdownMenuItem<String>(
+                              value: value,
+                              child: Text(value),
+                            );
+                          }).toList(),
+                          hint: Text(
+                            "Silahkan Pilih Area",
+                            style: TextStyle(
+                                color: Colors.black,
+                                fontSize: 16,
+                                fontWeight: FontWeight.w600),
+                          ),
+                          onChanged: (String value) {
+                            setState(() {
+                              _pilihArea = value;
+                            });
+                            _filter();
+                          },
+                        )),
+              ),
+            ],
+          ),
           SizedBox(height: 20),
           Container(
             margin: const EdgeInsets.symmetric(horizontal: 10),
@@ -364,25 +408,34 @@ class _ContentOrderHistoryState extends State<ContentOrderHistory> {
                                     Dialogs.showPrintCategory(
                                         context: context,
                                         action: (result) async {
+                                          String surabayaPusat = "";
+                                          String surabayaUtara = "";
+                                          String surabayaSelatan = "";
+                                          String surabayaBarat = "";
+                                          String surabayaTimur = "";
                                           Dialogs.hideDialog(context: context);
                                           for (int i = 0; i < _order.length; i++) {
                                             if (_order[i].active == "1") {
+                                              if(_order[i].customerArea.toLowerCase() == "surabaya pusat") surabayaPusat += "\n*" + _order[i].code;
+                                              else if(_order[i].customerArea.toLowerCase() == "surabaya utara") surabayaUtara += "\n*" + _order[i].code;
+                                              else if(_order[i].customerArea.toLowerCase() == "surabaya selatan") surabayaSelatan += "\n*" + _order[i].code;
+                                              else if(_order[i].customerArea.toLowerCase() == "surabaya barat") surabayaBarat += "\n*" + _order[i].code;
+                                              else if(_order[i].customerArea.toLowerCase() == "surabaya timur") surabayaTimur += "\n*" + _order[i].code;
+
                                               if (result == 0) {
-                                                if (_order[i].statusConfirm == "0")
-                                                  order.add(_order[i]);
-                                              } else if (result == 2) {
-                                                if (_order[i].statusConfirm == "2")
-                                                  order.add(_order[i]);
-                                              } else if (result == 3) {
-                                                if (_order[i].statusConfirm == "2")
-                                                  order.add(_order[i]);
-                                              } else
-                                                order.add(_order[i]);
+                                                if (_order[i].statusConfirm == "0") order.add(_order[i]);
+                                              } 
+                                              else if (result == 2) {
+                                                if (_order[i].statusConfirm == "2") order.add(_order[i]);
+                                              } 
+                                              else if (result == 3) {
+                                                if (_order[i].statusConfirm == "2") order.add(_order[i]);
+                                              } 
+                                              else order.add(_order[i]);
                                             }
                                           }
 
-                                          bool printSuccess = await Printing()
-                                              .printReseller(context, order);
+                                          bool printSuccess = await Printing().printReseller(context, order, surabayaPusat: surabayaPusat, surabayaUtara: surabayaUtara, surabayaSelatan: surabayaSelatan, surabayaBarat: surabayaBarat, surabayaTimur: surabayaTimur);
 
                                           if (printSuccess) {
                                             for (int i = 0;
@@ -542,6 +595,7 @@ class _ContentOrderHistoryState extends State<ContentOrderHistory> {
                           date: _order[index].date,
                           outputPattern: Global.DATETIME_SHOW);
                   detail += "\nCustomer: " + _order[index].customerName;
+                  if(_order[index].customerArea != "") detail += "\nArea: " + _order[index].customerArea;
                   detail += "\nAlamat: " + _order[index].customerAddress;
                   detail += "\nTelp: " + _order[index].customerPhone;
 
@@ -902,6 +956,18 @@ class _ContentOrderHistoryState extends State<ContentOrderHistory> {
         if(_cutomerSelected == "SEMUA") canAdd = true;
       }
 
+
+      if (_pilihArea == "" || _pilihArea == null || _pilihArea == "SEMUA") _pilihConvert = "%";
+      else if (_pilihArea == "Lainnya") _pilihConvert = "";
+      else _pilihConvert = _pilihArea;
+
+      if(canAdd){
+        if(_pilihConvert != "%"){
+          if(_pilihConvert != _orderfull[i].customerArea) canAdd = false;
+        }
+      }
+
+
       if(canAdd){
         _order.add(_orderfull[i]);
         totalTransaction++;
@@ -978,18 +1044,41 @@ class _ContentOrderHistoryState extends State<ContentOrderHistory> {
                   ),
                 );
               }));
-    } else {
+    } 
+    else {
       if (_order.statusConfirm == "2") {
         Global.materialNavigate(context, ContentOrderSend(order: _order))
             .then((value) {
           select();
         });
-      } else if (_order.statusConfirm == "3") {
+      } 
+      else if (_order.statusConfirm == "3") {
         Global.materialNavigate(context, ContentOrderImage(order: _order))
+            .then((value) {
+          select();
+        });
+      }
+      else if (_order.statusConfirm == "1") {
+        Global.materialNavigate(context, ContentOrderDetail(orderId: _order.id))
             .then((value) {
           select();
         });
       }
     }
   }
+
+
+  // Future<void> _showNotification() async {
+  //   const AndroidNotificationDetails androidPlatformChannelSpecifics =
+  //       AndroidNotificationDetails(
+  //           'your channel id', 'your channel name', 'your channel description',
+  //           importance: Importance.max,
+  //           priority: Priority.high,
+  //           ticker: 'ticker');
+  //   const NotificationDetails platformChannelSpecifics =
+  //       NotificationDetails(android: androidPlatformChannelSpecifics);
+  //   await flutterLocalNotificationsPlugin.show(
+  //       0, 'plain title', 'plain body', platformChannelSpecifics,
+  //       payload: 'item x');
+  // }
 }

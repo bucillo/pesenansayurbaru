@@ -41,7 +41,15 @@ class Printing {
     }
   }
 
-  Future<bool> beginPrint({List<Order> order, String printerId}) async {
+  Future<bool> beginPrint({
+    List<Order> order, 
+    String printerId, 
+    String surabayaPusat = "",
+    String surabayaUtara = "",
+    String surabayaSelatan = "",
+    String surabayaBarat = "",
+    String surabayaTimur = "",
+  }) async {
     if (order == null) return false;
     if (order.isEmpty) return false;
 
@@ -49,6 +57,45 @@ class Printing {
     var platform = const MethodChannel("printer");
     bool _isPrintSuccess = false;
     String row = convertToResellerString(order);
+
+    if(surabayaPusat!="" && surabayaUtara!="" && surabayaSelatan!="" && surabayaBarat!="" && surabayaTimur!=""){
+      if(surabayaPusat!=""){
+        row += "================================\n";
+        row += "SURABAYA PUSAT\n";
+        row += "================================\n";
+        row += "$surabayaPusat\n\n";
+      }
+
+      if(surabayaUtara!=""){
+        row += "================================\n";
+        row += "SURABAYA UTARA\n";
+        row += "================================\n";
+        row += "$surabayaUtara\n\n";
+      }
+
+      if(surabayaSelatan!=""){
+        row += "================================\n";
+        row += "SURABAYA SELATAN\n";
+        row += "================================\n";
+        row += "$surabayaSelatan\n\n";
+      }
+
+      if(surabayaBarat!=""){
+        row += "================================\n";
+        row += "SURABAYA BARAT\n";
+        row += "================================\n";
+        row += "$surabayaBarat\n\n";
+      }
+
+      if(surabayaTimur!=""){
+        row += "================================\n";
+        row += "SURABAYA TIMUR\n";
+        row += "================================\n";
+        row += "$surabayaTimur\n\n";
+      }
+
+      row += "\n";
+    }
 
     data['device_address'] = printerId;
     data['data'] = '$row';
@@ -66,10 +113,14 @@ class Printing {
   Future<bool> printReseller(BuildContext context, List<Order> order,
       {void Function() failedAction,
       void Function() successAction,
-      bool showLoading = true}) async {
+      bool showLoading = true,
+      String surabayaPusat = "",
+      String surabayaUtara = "",
+      String surabayaSelatan = "",
+      String surabayaBarat = "",
+      String surabayaTimur = ""}) async {
     if (!Printing().isPrinterInvAvailable()) {
-      Dialogs.showSimpleText(
-          context: context, text: 'Cetak gagal. Printer belum disetting.');
+      Dialogs.showSimpleText(context: context, text: 'Cetak gagal. Printer belum disetting.');
       return false;
     }
     if (showLoading) Dialogs.showLoading(context: context);
@@ -81,15 +132,13 @@ class Printing {
     printers = ArrayOfPrinter.fromJson(jsonDecode(jsonPrinter)).printers;
     if (printers == null || printers.length == 0) {
       Navigator.pop(context);
-      Dialogs.showSimpleText(
-          context: context, text: 'Printer belum disetting.');
+      Dialogs.showSimpleText(context: context, text: 'Printer belum disetting.');
       return false;
     }
 
     for (var printer in printers) {
       print("TEST " + printer.printerId);
-      bool isPrintSuccess =
-          await beginPrint(order: order, printerId: printer.printerId);
+      bool isPrintSuccess = await beginPrint(order: order, printerId: printer.printerId);
       Navigator.pop(context);
       if (!isPrintSuccess) {
         if (failedAction != null) {
